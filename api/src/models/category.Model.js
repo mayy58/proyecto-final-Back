@@ -10,9 +10,15 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      img: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+      },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      popularity: {
+        type: DataTypes.INTEGER,
       },
     },
     {
