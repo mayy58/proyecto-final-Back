@@ -39,6 +39,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      roll: {
+        type: DataTypes.ENUM("ADMIN", "USER", "SELLER"),
+        defaultValue: "USER",
+      },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
