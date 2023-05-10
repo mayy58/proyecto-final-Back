@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const getAllProduct = require("../handlers/getAllProduct")
 
 //const activitiesRouter = require("./activitiesRouter");
 // Importar todos los routers;
@@ -6,9 +7,9 @@ const { Router } = require("express");
 
 const mainRouter = Router();
 
-//mainRouter.use("/countries", countriesRouter);
-mainRouter.use();
-mainRouter.use();
+mainRouter.use("/product", getAllProduct);
+
+
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
