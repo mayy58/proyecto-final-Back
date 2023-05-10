@@ -37,3 +37,4 @@ const popularProductByCategory = async (limit) => {
 };
 
 module.exports = popularProductByCategory;
+
