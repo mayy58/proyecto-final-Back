@@ -5,15 +5,14 @@ const path = require("path");
 
 const detailOrderModel = require("./models/detailOrderModel");
 const productModel = require("./models/productModel");
-const categoryModel = require("./models/category.Model");
+const categoryModel = require("./models/CategoryModel");
 const orderModel = require("./models/orderModel");
 const userModel = require("./models/userModel");
 
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY, DB_PORT } =
-  process.env;
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY } = process.env;
 
 const sequelize = new Sequelize(
-  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,
   {
     logging: false,
     native: false,
@@ -31,12 +30,12 @@ categoryModel(sequelize);
 orderModel(sequelize);
 userModel(sequelize);
 
-const { product, detailOrder, category, order, user } = sequelize.models;
+const { product, detailOrder, Category, order, user } = sequelize.models;
 
 detailOrder.belongsTo(product);
 
-category.belongsToMany(product, { through: "categoryProduct" });
-product.belongsToMany(category, { through: "categoryProduct" });
+Category.belongsToMany(product, { through: "categoryproduct" });
+product.belongsToMany(Category, { through: "categoryproduct" });
 
 detailOrder.belongsTo(order);
 product.belongsTo(user);
