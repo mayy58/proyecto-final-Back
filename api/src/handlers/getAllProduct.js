@@ -9,4 +9,5 @@ const getAllProduct = async (req, res) => {
   }
 };
 
+console.log(prod);
 module.exports = getAllProduct;
