@@ -1,12 +1,16 @@
 const { Router } = require("express");
 
-const getAllProduct = require("../handlers/getAllProduct")
+const getProduct = require("../handlers/getProduct")
+const getProductByID = require("../handlers/getProductByID")
+const getPopularProduct = require("../handlers/productsHandler")
 
-const ProcuctRouter = Router();
+const productRouter = Router();
 
-// 📍 GET | /
-// Obtiene un arreglo de objetos, donde cada objeto es uma publicacion/producto.
 
-ProcuctRouter.get("/", getAllProduct);
+productRouter.get("/", getProduct);
 
-module.exports = ProcuctRouter;
+productRouter.get("/:id", getProductByID);
+
+productRouter.get("/popular", getPopularProduct);
+
+module.exports = productRouter;
