@@ -3,7 +3,7 @@ const findCategoryProduct = require("../controllers/findCategoryProduct");
 const getCategoryProduct = async (req, res) => {
 
   try {
-    //! const VER ACA LO DE LA query    que viene del front
+
     const { namecategory } = req.params;
     console.log(namecategory);
     const prod = await findCategoryProduct(namecategory);

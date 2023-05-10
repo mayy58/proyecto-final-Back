@@ -36,4 +36,5 @@ const popularProductByCategory = async (limit) => {
   }
 };
 
-module.exports = { popularProductByCategory };
+module.exports = popularProductByCategory;
+
