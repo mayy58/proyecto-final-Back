@@ -7,6 +7,6 @@ const ProcuctRouter = Router();
 // 📍 GET | /
 // Obtiene un arreglo de objetos, donde cada objeto es uma publicacion/producto.
 
-ProcuctRouter.get("/product", getAllProduct);
+ProcuctRouter.get("/", getAllProduct);
 
 module.exports = ProcuctRouter;
