@@ -1,15 +1,16 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
+
 
 const detailOrderModel = require("./models/detailOrderModel");
 const productModel = require("./models/productModel");
-const categoryModel = require("./models/Category.Model");
+const categoryModel = require("./models/CategoryModel");
 const orderModel = require("./models/orderModel");
 const userModel = require("./models/userModel");
 
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } =  process.env;
+
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY } = process.env;
+
 
 const sequelize = new Sequelize(
   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,

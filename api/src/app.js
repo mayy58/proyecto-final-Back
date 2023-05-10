@@ -25,7 +25,6 @@ server.use((req, res, next) => {
 });
 
 server.use(mainRouter);
-//server.use("/", routes);
 
 // Error catching endware.
 server.use((err, req, res, next) => {

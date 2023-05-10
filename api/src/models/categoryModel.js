@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       img: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.STRING,
       },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
