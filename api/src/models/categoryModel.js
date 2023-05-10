@@ -4,14 +4,14 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define(
-    "category",
+    "Category",
     {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       img: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.STRING,
       },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
