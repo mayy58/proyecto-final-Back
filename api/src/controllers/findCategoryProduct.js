@@ -1,18 +1,23 @@
-
-
-const { product, category } = require('../db')
+const { product, Category } = require('../db')
+const { Op } = require("sequelize");
 
 
 //! Este controller busca y retorna todos los productos
-const findCategoryProduct = async () => {
+const findCategoryProduct = async (name) => {
 
-  let prod_Categ = await product.findAll({  
+  let prod_Categ = await Category.findAll({  
+    where: {
+      name: {
+        [Op.iLike]: `%${name}%`,
+      }
+    },
     include: {
-      model: category,
-      attributes: ["name"],
+      model: product,
+      attributes: [ "id", "name", "price"],
       through: { attributes: [], }, 
-  }, });
+    }, });
 
+  
   return prod_Categ;
 }
 

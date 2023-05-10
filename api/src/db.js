@@ -5,7 +5,7 @@ const path = require("path");
 
 const detailOrderModel = require("./models/detailOrderModel");
 const productModel = require("./models/productModel");
-const categoryModel = require("./models/category.Model");
+const categoryModel = require("./models/Category.Model");
 const orderModel = require("./models/orderModel");
 const userModel = require("./models/userModel");
 
@@ -30,12 +30,12 @@ categoryModel(sequelize);
 orderModel(sequelize);
 userModel(sequelize);
 
-const { product, detailOrder, category, order, user } = sequelize.models;
+const { product, detailOrder, Category, order, user } = sequelize.models;
 
 detailOrder.belongsTo(product);
 
-category.belongsToMany(product, { through: "categoryProduct" });
-product.belongsToMany(category, { through: "categoryProduct" });
+Category.belongsToMany(product, { through: "categoryproduct" });
+product.belongsToMany(Category, { through: "categoryproduct" });
 
 detailOrder.belongsTo(order);
 product.belongsTo(user);

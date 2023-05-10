@@ -1,5 +1,7 @@
 const { Router } = require("express");
-const getAllProduct = require("../handlers/getAllProduct")
+const getAllProduct = require("../handlers/getAllProduct");
+const getCategoryProduct = require("../handlers/getCategoryProduct");
+const productRouter = require("./productRouter")
 
 //const activitiesRouter = require("./activitiesRouter");
 // Importar todos los routers;
@@ -7,7 +9,8 @@ const getAllProduct = require("../handlers/getAllProduct")
 
 const mainRouter = Router();
 
-mainRouter.use("/product", getAllProduct);
+mainRouter.use("/product", productRouter);
+mainRouter.use("/",getCategoryProduct ); //este se tiene que ir al CategoryRouter
 
 
 
