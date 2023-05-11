@@ -1,4 +1,5 @@
-const { product, Category } = require("../db");
+const { product, Category, user } = require("../db");
+const { Op } = require("sequelize");
 
 const popularProductByCategory = async (limit) => {
   try {
@@ -36,5 +37,24 @@ const popularProductByCategory = async (limit) => {
   }
 };
 
-module.exports = popularProductByCategory;
+//! Este controller busca y retorna todos los productos de un usuario
+const findProductUser = async (nameuser) => {
+
+  let prod_user = await product.findAll({
+      include: {
+          model: user,
+          attributes: [ "name"],
+          where: {
+            name: {
+              [Op.iLike]: `%${nameuser}%`,
+            }
+        },
+      }}
+);
+
+return prod_user;
+}
+
+
+module.exports = { popularProductByCategory, findProductUser };
 
