@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, findProductPrice } = require("../controllers/productsControllers");
 
 
 const getPopularProduct = async () => {
@@ -22,6 +22,18 @@ const getProductsUser = async (req, res) => {
     }
  }
 
+ //! Handlers para traer los productos por un rango de precios
+ const getPriceRange = async (req, res) => {
+  try {
+    const { max, min } = req.query;
+    const prodPrice = await findProductPrice(max, min);
+    res.status(200).json(prodPrice);
+    
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
 
-module.exports = { getPopularProduct, getProductsUser};
+ }
+
+module.exports = { getPopularProduct, getProductsUser, getPriceRange};
 
