@@ -14,5 +14,6 @@ productRouter.get("/:id", getProductByID);
 
 productRouter.get("/popular", getPopularProduct);
 
+productRouter.get("/:namauser", getProductsUser);
 
 module.exports = productRouter;
