@@ -55,6 +55,16 @@ const findProductUser = async (nameuser) => {
 return prod_user;
 }
 
+//!Este controller busca los productos por rango de Precios
+const findProductPrice = async (max, min) => {
+  let prod_price = await product.findAll({
+     where: { 
+      price: {
+        [Op.between]: [min, max],
+      }
+    }});
+  return prod_price;
+}
 
-module.exports = { popularProductByCategory, findProductUser };
+module.exports = { popularProductByCategory, findProductUser, findProductPrice };
 

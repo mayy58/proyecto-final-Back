@@ -2,7 +2,7 @@ const { Router } = require("express");
 
 const getProduct = require("../handlers/getProduct")
 const getProductByID = require("../handlers/getProductByID")
-const { getPopularProduct, getProductsUser } = require("../handlers/productsHandler")
+const { getPopularProduct, getProductsUser, getPriceRange } = require("../handlers/productsHandler")
 
 
 
@@ -16,6 +16,8 @@ productRouter.get("/:id", getProductByID);
 productRouter.get("/popular", getPopularProduct);
 
 productRouter.get("/user/:nameuser", getProductsUser);
+
+productRouter.get("/price/range", getPriceRange) // http://localhost:3001//price/range?max="valorMaximo"&min="valorMinimo"
 
 
 module.exports = productRouter;
