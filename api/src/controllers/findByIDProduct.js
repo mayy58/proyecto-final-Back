@@ -10,7 +10,7 @@ const findByIDProduct = async (id)=>{
     
         },
       });
-    if (!prod) throw Error("La Raza no existe");
+    if (!prod) throw Error("El producto no existe");
     return prod;
 }
 

@@ -2,7 +2,7 @@ const { product, Category } = require('../db')
 const { Op } = require("sequelize");
 
 
-//! Este controller busca y retorna todos los productos
+//! Este controller busca y retorna todos los productos de una categoria
 const findCategoryProduct = async (name) => {
 
   let prod_Categ = await Category.findAll({  
@@ -18,7 +18,7 @@ const findCategoryProduct = async (name) => {
     }, });
 
   
-  return prod_Categ;
+  return prod_Categ[0].products;
 }
 
   

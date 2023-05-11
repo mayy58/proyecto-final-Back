@@ -36,5 +36,20 @@ const popularProductByCategory = async (limit) => {
   }
 };
 
-module.exports = popularProductByCategory;
+//! Este controller busca y retorna todos los productos de un usuario
+const findProductUser = async (nameuser) => {
+
+  let prod_user = await product.findAll({  
+      include: {
+          model: user,
+          attributes: [ "name"],
+          where: { name: nameuser }, 
+        },
+  });
+
+return prod_user;
+}
+
+
+module.exports = { popularProductByCategory, findProductUser };
 
