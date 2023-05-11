@@ -1,5 +1,5 @@
-const popularProductByCategory = require("../controllers/productsControllers");
-const findProductUser = require("../controllers/findProductUser")
+const { popularProductByCategory, findProductUser } = require("../controllers/productsControllers");
+
 
 const getPopularProduct = async () => {
   try {
@@ -11,9 +11,8 @@ const getPopularProduct = async () => {
 };
 
 //! Este Handler solicita los productos de un usuario a su controller
-const getProductUser = async (req, res) => {
+const getProductsUser = async (req, res) => {
     try {
-
         const { nameuser }  = req.params;
         const prod = await findProductUser(nameuser);
         res.status(200).json(prod);
@@ -24,5 +23,5 @@ const getProductUser = async (req, res) => {
  }
 
 
-module.exports = { getPopularProduct, getProductUser};
+module.exports = { getPopularProduct, getProductsUser};
 
