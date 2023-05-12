@@ -5,7 +5,6 @@ const getCategoryProduct = async (req, res) => {
   try {
 
     const { namecategory } = req.params;
-    console.log(namecategory);
     const prod = await findCategoryProduct(namecategory);
     res.status(200).json(prod);
   } catch (error) {

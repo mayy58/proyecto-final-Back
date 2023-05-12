@@ -13,7 +13,7 @@ const findCategoryProduct = async (name) => {
     },
     include: {
       model: product,
-      attributes: [ "id", "name", "price"],
+      attributes: [ "id", "img", "name", "price"],
       through: { attributes: [], }, 
     }, });
 
