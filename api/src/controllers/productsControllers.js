@@ -51,8 +51,24 @@ const findProductUser = async (nameuser) => {
         },
       }}
 );
-
 return prod_user;
+}
+
+//ordena los productos
+const getOrderProduct = async(orders)=>{
+      const products = await product?.findAll()
+      let ordersProd=[]
+      if( orders === "asc" ){
+        ordersProd = products.sort((a,b)=> a.price - b.price)
+      }else if(orders === "desc"){
+        ordersProd = products.sort((a,b)=> b.price - a.price)
+      }else if(orders === "ascName"){
+        ordersProd = products.sort((a,b)=> a.name - b.name)
+      }else{
+        ordersProd = products.sort((a,b)=> b.name - a.name)
+      }
+
+      return ordersProd;
 }
 
 //!Este controller busca los productos por rango de Precios
@@ -66,7 +82,8 @@ const findProductPrice = async (max, min) => {
   return prod_price;
 }
 
-//! Controllers para cargar productos **** voy a suponer que me mandan el nombre de la categoria y no el ID
+
+//! Controllers para cargar productos **** voy a suponer que me mandan el nombre de la categoria y no el ID pero si el id del usuario que lo carga
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, category, userId}) =>{
 
   const categoryID = await Category.findOne({where: { name: category }});
@@ -86,5 +103,7 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
 }
 
 
-module.exports = { popularProductByCategory, findProductUser, findProductPrice, createProduct };
+
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProductPrice, createProduct };
+
 
