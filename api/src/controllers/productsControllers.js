@@ -66,5 +66,25 @@ const findProductPrice = async (max, min) => {
   return prod_price;
 }
 
-module.exports = { popularProductByCategory, findProductUser, findProductPrice };
+//! Controllers para cargar productos **** voy a suponer que me mandan el nombre de la categoria y no el ID
+const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, category, userId}) =>{
+
+  const categoryID = await Category.findOne({where: { name: category }});
+  const newprod = await product.create({ 
+    name, 
+    img, 
+    stock, 
+    description, 
+    price, 
+    isOnSale, 
+    salePrice, 
+    status,
+    userId
+  });
+  newprod.addCategories(categoryID);
+  return newprod;
+}
+
+
+module.exports = { popularProductByCategory, findProductUser, findProductPrice, createProduct };
 

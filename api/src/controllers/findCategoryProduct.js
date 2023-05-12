@@ -1,24 +1,24 @@
-const { product, Category } = require('../db')
-const { Op } = require("sequelize");
+const { product, Category } = require('../db');
 
+//! Este controller busca y retorna todos los productos
+const findCategoryProduct = async (catname, page, size) => {
 
-//! Este controller busca y retorna todos los productos de una categoria
-const findCategoryProduct = async (name) => {
+  const category = await Category.findOne({ where: { name: catname } });
+  if(!category) throw new Error("La categoria especificada no existe")
 
-  let prod_Categ = await Category.findAll({  
-    where: {
-      name: {
-        [Op.iLike]: `%${name}%`,
-      }
-    },
+  const prod_categ = await product.findAndCountAll({
     include: {
-      model: product,
-      attributes: [ "id", "img", "name", "price"],
-      through: { attributes: [], }, 
-    }, });
+      model: Category,
+      where: {
+        id: category.id
+      },
+      through: { attributes: [] }
+    },
+    limit: size,
+    offset: page * size
+  });
 
-  
-  return prod_Categ[0].products;
+  return prod_categ;
 }
 
   

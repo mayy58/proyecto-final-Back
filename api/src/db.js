@@ -30,13 +30,19 @@ userModel(sequelize);
 
 const { product, detailOrder, Category, order, user } = sequelize.models;
 
+product.hasMany(detailOrder);
 detailOrder.belongsTo(product);
 
 Category.belongsToMany(product, { through: "categoryproduct" });
 product.belongsToMany(Category, { through: "categoryproduct" });
 
+order.hasMany(detailOrder);
 detailOrder.belongsTo(order);
+
+user.hasMany(product)
 product.belongsTo(user);
+
+user.hasMany.order
 order.belongsTo(user);
 
 module.exports = {

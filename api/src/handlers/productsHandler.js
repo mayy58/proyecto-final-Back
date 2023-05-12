@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser, findProductPrice } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, findProductPrice, createProduct } = require("../controllers/productsControllers");
 
 
 const getPopularProduct = async () => {
@@ -35,5 +35,16 @@ const getProductsUser = async (req, res) => {
 
  }
 
-module.exports = { getPopularProduct, getProductsUser, getPriceRange};
+ //! Handlers para cargar productos setProduct
+ const setProduct = async (req, res) => {
+  try {
+    const { name, img, stock, description, price, isOnSale, salePrice, status, category, userId} = req.body;
+    const newProduct = await createProduct({ name, img, stock, description, price, isOnSale, salePrice, status, category, userId });
+    res.status(200).json(newProduct);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = { getPopularProduct, getProductsUser, getPriceRange, setProduct};
 

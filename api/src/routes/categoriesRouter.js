@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
     getAllCategories,
     morePopularCategory,
+    setCategories
   } = require("../handlers/categoriesHandler");
 
 const getCategoryProduct = require("../handlers/getCategoryProduct");
@@ -13,5 +14,7 @@ categoryRouter.get("/", getAllCategories);
 categoryRouter.get("/:namecategory", getCategoryProduct)
 
 categoryRouter.get("/:id/click", morePopularCategory);
+
+categoryRouter.post("/", setCategories);
 
 module.exports = categoryRouter;
