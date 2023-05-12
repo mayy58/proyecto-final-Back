@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, getOrderProduct } = require("../controllers/productsControllers");
 
 
 const getPopularProduct = async () => {
@@ -22,12 +22,12 @@ const getProductsUser = async (req, res) => {
     }
  }
 
- const getOrderPriceHanlder = async (req, res) => {
+ const getOrderHanlderProducto = async (req, res) => {
   try {
-
+    
       const { orders } = req.query
-      const orderPrice = await getOrderPriceProduct(orders);
-      res.status(200).json(orderPrice);
+      const order = await getOrderProduct(orders);
+      res.status(200).json(order);
 
   } catch (error) {
       res.status(400).json({ error: error.message });
@@ -35,5 +35,5 @@ const getProductsUser = async (req, res) => {
 }
 
 
-module.exports = { getPopularProduct, getProductsUser, getOrderPriceHanlder};
+module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto};
 

@@ -55,17 +55,22 @@ return prod_user;
 }
 
 ////////ECHO POR NELSON  ////////////////////////
-const getOrderPriceProduct = async(orders)=>{
+const getOrderProduct = async(orders)=>{
       const products = await product?.findAll()
-      let orderPrice=[]
+      let ordersProd=[]
       if( orders === "asc" ){
-        orderPrice = products.sort((a,b)=> a.price - b.price)
+        ordersProd = products.sort((a,b)=> a.price - b.price)
+      }else if(orders === "desc"){
+        ordersProd = products.sort((a,b)=> b.price - a.price)
+      }else if(orders === "ascName"){
+        ordersProd = products.sort((a,b)=> a.name - b.name)
       }else{
-        orderPrice = products.sort((a,b)=> b.price - a.price)
+        ordersProd = products.sort((a,b)=> b.name - a.name)
       }
-      return orderPrice;
+
+      return ordersProd;
 }
 
 
-module.exports = { popularProductByCategory, findProductUser, getOrderPriceProduct };
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct };
 
