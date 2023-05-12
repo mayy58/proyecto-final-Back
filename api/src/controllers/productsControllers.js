@@ -51,8 +51,24 @@ const findProductUser = async (nameuser) => {
         },
       }}
 );
-
 return prod_user;
+}
+
+//ordena los productos
+const getOrderProduct = async(orders)=>{
+      const products = await product?.findAll()
+      let ordersProd=[]
+      if( orders === "asc" ){
+        ordersProd = products.sort((a,b)=> a.price - b.price)
+      }else if(orders === "desc"){
+        ordersProd = products.sort((a,b)=> b.price - a.price)
+      }else if(orders === "ascName"){
+        ordersProd = products.sort((a,b)=> a.name - b.name)
+      }else{
+        ordersProd = products.sort((a,b)=> b.name - a.name)
+      }
+
+      return ordersProd;
 }
 
 //!Este controller busca los productos por rango de Precios
@@ -66,5 +82,5 @@ const findProductPrice = async (max, min) => {
   return prod_price;
 }
 
-module.exports = { popularProductByCategory, findProductUser, findProductPrice };
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProductPrice };
 

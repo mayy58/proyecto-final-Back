@@ -1,5 +1,5 @@
-const { popularProductByCategory, findProductUser, findProductPrice } = require("../controllers/productsControllers");
 
+const { popularProductByCategory, findProductUser, getOrderProduct, findProductPrice } = require("../controllers/productsControllers");
 
 const getPopularProduct = async () => {
   try {
@@ -22,6 +22,22 @@ const getProductsUser = async (req, res) => {
     }
  }
 
+
+ const getOrderHanlderProducto = async (req, res) => {
+  try {
+    
+      const { orders } = req.query
+      const order = await getOrderProduct(orders);
+      res.status(200).json(order);
+
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+}
+
+
+
+
  //! Handlers para traer los productos por un rango de precios
  const getPriceRange = async (req, res) => {
   try {
@@ -34,6 +50,7 @@ const getProductsUser = async (req, res) => {
   }
 
  }
+module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRange};
 
-module.exports = { getPopularProduct, getProductsUser, getPriceRange};
+
 
