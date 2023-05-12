@@ -17,7 +17,7 @@ productRouter.get("/popular", getPopularProduct);
 
 productRouter.get("/user/:nameuser", getProductsUser);
 
-productRouter.get("/price/range", getPriceRange) // http://localhost:3001//price/range?max="valorMaximo"&min="valorMinimo"
+productRouter.get("/price/range", getPriceRange) // http://localhost:3001/product/price/range?max="valorMaximo"&min="valorMinimo"
 
 
 module.exports = productRouter;

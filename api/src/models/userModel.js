@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
 // Exportamos una funcion que define el modelo
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
@@ -7,9 +8,8 @@ module.exports = (sequelize) => {
     "user",
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncremet: true,
-        allowNull: false,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
       name: {
@@ -30,6 +30,11 @@ module.exports = (sequelize) => {
       },
       password: {
         type: DataTypes.STRING,
+        allowNull: false,
+        set(value) {
+          const hashedPassword = bcrypt.hashSync(value, 10);
+          this.setDataValue("password", hashedPassword);
+        },
       },
       nickname: {
         type: DataTypes.STRING,
