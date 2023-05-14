@@ -10,7 +10,7 @@ const getCategoryProduct = async (req, res) => {
         page = pageAsNumber;
 
     let size = 3;
-    if(!Number.isNaN(sizeAsNumbre) && sizeAsNumbre > 0 && sizeAsNumbre > 10) 
+    if(!Number.isNaN(sizeAsNumbre) && sizeAsNumbre > 0 && sizeAsNumbre < 10) 
         size = sizeAsNumbre;
 
     //****** */

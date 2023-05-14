@@ -55,7 +55,7 @@ return prod_user;
 }
 
 //ordena los productos
-const getOrderProduct = async(orders)=>{
+const getOrderProduct = async(orders)=>{ // tendria que recivir el orden y el nombre del producto o categiria
       const products = await product?.findAll()
       let ordersProd=[]
       if( orders === "asc" ){
@@ -72,16 +72,40 @@ const getOrderProduct = async(orders)=>{
 }
 
 //!Este controller busca los productos por rango de Precios
-const findProductPrice = async (max, min) => {
+const findProdCatPrice = async (namecategory, max, min) => {
+
+  const category = await Category.findOne({ where: { name: namecategory } });
+  if(!category) throw new Error("La categoria especificada no existe")
+
   let prod_price = await product.findAll({
      where: { 
       price: {
         [Op.between]: [min, max],
       }
-    }});
+    },
+    include: {
+      model: Category,
+      where: {
+        id: category.id
+      },
+      through: { attributes: [] }
+    },});
   return prod_price;
 }
 
+const findNameProdPrice = async (nameproduct, max, min) => {
+  let prod_price = await product.findAll({
+     where: { 
+      price: {
+        [Op.between]: [min, max],
+      },
+      name:{ 
+        [Op.iLike]: `%${nameproduct}%` 
+      }
+    },
+   });
+  return prod_price;
+}
 
 //! Controllers para cargar productos **** voy a suponer que me mandan el nombre de la categoria y no el ID pero si el id del usuario que lo carga
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, category, userId}) =>{
@@ -104,6 +128,6 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
 
 
 
-module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProductPrice, createProduct };
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice };
 
 
