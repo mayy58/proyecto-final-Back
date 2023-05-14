@@ -1,17 +1,22 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const passport = require("./utils/passportConfig");
+const session = require("express-session");
+const flash = require("express-flash");
+
+require("dotenv").config();
 const mainRouter = require("./routes/mainRouter.js");
+const loginRouter = require("./routes/loginRouter");
 
 require("./db.js");
 const server = express();
 server.use(express.json());
 
 server.name = "API";
-server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
-server.use(bodyParser.json({ limit: "50mb" }));
-server.use(cookieParser());
+
+server.use(express.urlencoded({ extended: true }));
+server.use(cookieParser(process.env.SECRET_key));
 server.use(morgan("dev"));
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -24,7 +29,21 @@ server.use((req, res, next) => {
   next();
 });
 
+server.use(flash());
+
+server.use(
+  session({
+    secret: process.env.SECRET_key,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+server.use(passport.initialize());
+server.use(passport.session());
+
 server.use(mainRouter);
+server.use("/", loginRouter);
 
 // Error catching endware.
 server.use((err, req, res, next) => {

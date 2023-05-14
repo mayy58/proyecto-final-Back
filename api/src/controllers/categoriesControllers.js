@@ -27,4 +27,15 @@ const incrementPopularity = async (categoryId) => {
   );
 };
 
-module.exports = { allCategories, incrementPopularity };
+//! Controllers para cargar Categirias 
+const createCategory = async ({ name, img }) =>{
+
+  const newCateg = await Category.create({ 
+    name, 
+    img, 
+  });
+
+  return newCateg;
+}
+
+module.exports = { allCategories, incrementPopularity, createCategory };
