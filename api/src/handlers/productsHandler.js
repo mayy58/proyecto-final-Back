@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser, getOrderProduct, findProductPrice, createProduct } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice } = require("../controllers/productsControllers");
 
 const getPopularProduct = async () => {
   try {
@@ -24,7 +24,7 @@ const getProductsUser = async (req, res) => {
 
  const getOrderHanlderProducto = async (req, res) => {
   try {
-    
+   
       const { orders } = req.query
       const order = await getOrderProduct(orders);
       res.status(200).json(order);
@@ -35,11 +35,13 @@ const getProductsUser = async (req, res) => {
 }
 
 
- //! Handlers para traer los productos por un rango de precios
- const getPriceRange = async (req, res) => {
+ //! Handlers para traer los productos por un rango de precios por nombre de producto
+ //!recibo el nombre por params y los rangos por query
+ const getPriceRangeName = async (req, res) => {
   try {
     const { max, min } = req.query;
-    const prodPrice = await findProductPrice(max, min);
+    const {nameproduct} = req.params;
+    const prodPrice = await findNameProdPrice(nameproduct, max, min);
     res.status(200).json(prodPrice);
     
   } catch (error) {
@@ -47,6 +49,22 @@ const getProductsUser = async (req, res) => {
   }
 
  }
+
+  //! Handlers para traer los productos por un rango de precios por categoria
+  //!recibo la categoria por params y los rangos por query
+  const getPriceRangeCategory = async (req, res) => {
+    try {
+      const { max, min } = req.query;
+      const {namecategory} = req.params;
+      const prodPrice = await findProdCatPrice(namecategory, max, min);
+      res.status(200).json(prodPrice);
+      
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  
+   }
+  
 
 
  //! Handlers para cargar productos setProduct
@@ -60,5 +78,5 @@ const getProductsUser = async (req, res) => {
   }
 };
 
-module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRange, setProduct};
+module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory};
 
