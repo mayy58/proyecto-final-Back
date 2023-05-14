@@ -54,7 +54,9 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, email, password, done) => {
+
       const { name, lastName, birthDate, address, nickname } = req.body;
+
       try {
         const usernew = await user.create({
           email: email,
@@ -107,3 +109,4 @@ passport.use(
 );
 
 module.exports = passport;
+

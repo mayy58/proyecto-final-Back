@@ -3,7 +3,9 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const passport = require("./utils/passportConfig");
 const session = require("express-session");
+
 const flash = require("express-flash");
+
 
 require("dotenv").config();
 const mainRouter = require("./routes/mainRouter.js");
@@ -29,13 +31,15 @@ server.use((req, res, next) => {
   next();
 });
 
+
 server.use(flash());
+
 
 server.use(
   session({
     secret: process.env.SECRET_key,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
   })
 );
 

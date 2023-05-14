@@ -3,6 +3,7 @@ const passport = require("../utils/passportConfig");
 
 const loginRouter = Router();
 
+
 loginRouter.post(
   "/login",
   passport.authenticate("loguearse", {
@@ -10,10 +11,12 @@ loginRouter.post(
     failureRedirect: "/login",
     passReqToCallback: true,
     failureFlash: true,
+
   })
 );
 
 loginRouter.get("/", (req, res) => {
+
   return res.redirect("/");
 });
 loginRouter.post(
@@ -22,6 +25,7 @@ loginRouter.post(
     successRedirect: "/",
     failureRedirect: "/login",
     passReqToCallback: true,
+
     failureFlash: true,
   })
 );
