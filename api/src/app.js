@@ -4,8 +4,12 @@ const morgan = require("morgan");
 const passport = require("./utils/passportConfig");
 const session = require("express-session");
 
+const flash = require("express-flash");
+
+
 require("dotenv").config();
 const mainRouter = require("./routes/mainRouter.js");
+const loginRouter = require("./routes/loginRouter");
 
 require("./db.js");
 const server = express();
@@ -27,6 +31,10 @@ server.use((req, res, next) => {
   next();
 });
 
+
+server.use(flash());
+
+
 server.use(
   session({
     secret: process.env.SECRET_key,
@@ -39,6 +47,7 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 server.use(mainRouter);
+server.use("/", loginRouter);
 
 // Error catching endware.
 server.use((err, req, res, next) => {

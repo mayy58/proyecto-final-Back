@@ -54,7 +54,9 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, email, password, done) => {
-      const { name, lastName, birthDate, address } = req.body;
+
+      const { name, lastName, birthDate, address, nickname } = req.body;
+
       try {
         const usernew = await user.create({
           email: email,
@@ -62,6 +64,7 @@ passport.use(
           name: name,
           lastName: lastName,
           birthDate: birthDate,
+          nickname: nickname,
           address: address,
         });
         return done(null, usernew);
@@ -107,18 +110,3 @@ passport.use(
 
 module.exports = passport;
 
-//Uso de Passport en tus rutas: En tus rutas o controladores, puedes utilizar Passport para
-//proteger las rutas que requieren autenticación. Por ejemplo:
-//const express = require('express');
-//const passport = require('passport');
-//const router = express.Router();
-//
-//// Ruta protegida que requiere autenticación
-//router.get('/profile', passport.authenticate('jwt', { session: false }), (req, res) => {
-//  res.send('Perfil del usuario');
-//});
-//
-//// Ruta de inicio de sesión utilizando la estrategia local
-//router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
-//  // Autenticación exitosa, se puede generar un token JWT y enviar en la respuesta
-//
