@@ -4,11 +4,11 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define("product", {
-    // id: {
-    //   type: DataTypes.INTEGER,
-    //   autoIncremet: true,
-    //   primaryKey: true,
-    // },
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncremet: true,
+    },
     img: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
@@ -40,6 +40,7 @@ module.exports = (sequelize) => {
     },
     status: {
       type: DataTypes.ENUM("USADO", "NUEVO"),
+      defaultValue: "NUEVO",
     },
 
     deleteLogic: {
