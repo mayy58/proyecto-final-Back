@@ -109,9 +109,11 @@ const findNameProdPrice = async (nameproduct, max, min) => {
 
 //! Controllers para cargar productos **** voy a suponer que me mandan el nombre de la categoria y no el ID pero si el id del usuario que lo carga
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, categories, email}) =>{
-  const user = await user.findOne({where: {email: email}});
-  const userId  = user.id;
+  const iduser = await user.findOne({where: {email: email}});
+  if(!iduser) throw new Error('El usuario no esta registrado');
+  const userId  = iduser.id;
   const categoryID = await Category.findOne({where: { name: categories }});
+  if(!categoryID) throw new Error('Categoria Incorrecta');
   const newprod = await product.create({ 
     name, 
     img, 
