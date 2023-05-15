@@ -70,8 +70,8 @@ const getProductsUser = async (req, res) => {
  //! Handlers para cargar productos setProduct
  const setProduct = async (req, res) => {
   try {
-    const { name, img, stock, description, price, isOnSale, salePrice, status, category, userId} = req.body;
-    const newProduct = await createProduct({ name, img, stock, description, price, isOnSale, salePrice, status, category, userId });
+    const { name, img, stock, description, price, isOnSale, salePrice, status, categories, email} = req.body;
+    const newProduct = await createProduct({ name, img, stock, description, price, isOnSale, salePrice, status, categories, email });
     res.status(200).json(newProduct);
   } catch (error) {
     res.status(400).json({ error: error.message });
