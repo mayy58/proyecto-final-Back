@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const getProduct = require("../handlers/getProduct")
 const getProductByID = require("../handlers/getProductByID")
-const { getPopularProduct, getProductsUser, getPriceRangeCategory, getOrderHanlderProducto, setProduct, getPriceRangeName } = require("../handlers/productsHandler")
+const { getPopularProduct, getProductsUser, getPriceRangeCategory, getOrderHanlderProducto, setProduct, getPriceRangeName,postShoppingHandler } = require("../handlers/productsHandler")
 const productRouter = Router();
+const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf")
 
 productRouter.get("/", getProduct);
 productRouter.get("/:id", getProductByID);
@@ -12,7 +13,11 @@ productRouter.get("/order/orderPrice", getOrderHanlderProducto)
 
 productRouter.get("/pricerange/category/:namecategory", getPriceRangeCategory) // product/pricerange/category/Hogar?max=80000&min=5000
 productRouter.get("/pricerange/name/:nameproduct", getPriceRangeName) // product/pricerange/name/zapa?max=50000&min=5000
+//para el pull request mercado pago
+productRouter.post("/payment", postShoppingHandler)
+///hecho por nelson para despues controlar en el pull marge request
 
+productRouter.get("/order/name/nameproduct", getOrderNameProductPriceAlf) //http://localhost:3001/product/order/name/nameproduct?name=samsgung Galaxi&priceMin=10&priceMax=800
 productRouter.post("/", setProduct)
 
 module.exports = productRouter;
