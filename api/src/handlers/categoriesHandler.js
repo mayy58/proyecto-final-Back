@@ -1,7 +1,7 @@
 const {
   allCategories,
   incrementPopularity,
-  createCategory
+  createCategory,
 } = require("../controllers/categoriesControllers");
 const getOrderNameCategoryControllers = require("../controllers/getOrderNameCategoryControllers");
 
@@ -27,13 +27,16 @@ const morePopularCategory = async (req, res) => {
 //! Handlers para cargar categorias
 const setCategories = async (req, res) => {
   try {
-    const { name, img} = req.body;
+    const { name, img } = req.body;
     const newCategory = await createCategory({ name, img });
     res.status(200).json(newCategory);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
+ 
+
 
 const getOrderNameCategry = async (req, res) => {
   try {
@@ -48,3 +51,4 @@ const getOrderNameCategry = async (req, res) => {
 
 
 module.exports = { getAllCategories, morePopularCategory, setCategories, getOrderNameCategry };
+
