@@ -3,6 +3,7 @@ const { product, Category } = require("../db")
 
 const getByNameProduct = async (name, page, size)=>{
 
+    
     //Buscamos en la base de datos los productos con esa cadena de string y me los trae paginado x6
     const productDB = await product?.findAndCountAll({
         include: {
