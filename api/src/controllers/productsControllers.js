@@ -136,14 +136,14 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
 const postPagoMercadoPago = async(products)=>{
   let preference = {
     items:[],
-    
+
     back_urls:{
       success:"http://localhost:3001",
       failure:"",
       pending:"",
     },
-    auto_return: "approved",//en este caso esta aprovado el pago
-    binary_mode:true,//acepta el pago pendiente
+    auto_return: "approved",//en este caso esta aprobado el pago
+    binary_mode:true,//en este caso no se acepta el pago pendiente
   }
   products.forEach(elem => {// aquí debo buscar en la base de datos e ir actualizando stock
     preference.items.push({

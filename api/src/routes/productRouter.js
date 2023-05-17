@@ -17,7 +17,7 @@ productRouter.get("/pricerange/name/:nameproduct", getPriceRangeName) // product
 productRouter.post("/payment", postShoppingHandler)
 ///hecho por nelson para despues controlar en el pull marge request
 
-productRouter.get("/order/name/nameproduct", getOrderNameProductPriceAlf) //http://localhost:3001/product/order/name/nameproduct?name=samsgung Galaxi&priceMin=10&priceMax=800
+productRouter.get("/order/name/:nameproduct", getOrderNameProductPriceAlf) //http://localhost:3001/product/order/name/nameproduct?name=samsgung Galaxi&priceMin=10&priceMax=800
 productRouter.post("/", setProduct)
 
 module.exports = productRouter;

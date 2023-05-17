@@ -3,20 +3,37 @@ const { product, Category } = require("../db")
 
 ///hecho por nelson para despues controlar en el pull marge request
 
-const getOrderNameProductControllers = async({name, orders })=>{
+const getOrderNameProductControllers = async({ nameproduct,size, page, orders })=>{
+  //console.log({nameproduct, page, size, orders})
     
-  const productDB = await product?.findAndCountAll({
-    where: { name:{ [Op.iLike]: `%${name}%` }},
-    //attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic" ],
-})
-    let ordersProd=[]
-    if( orders === "asc" ){
-      ordersProd = productDB.rows.sort((a,b)=>a.name.localeCompare(b.name))
-    }else{
-      ordersProd = productDB.rows.sort((a,b)=> b.name.localeCompare(a.name))
+  
+  let name = "name"
+    if(orders==="ascPrice"){ //ordena por precio
+      name = "price"
+      orders= "ASC"
+    }else  if(orders==="descPrice"){
+      name = "price"
+      orders= "DESC"
     }
-    console.log(productDB)
-    return productDB;
+    if(orders==="asc"){ // orderna por name
+      orders= "ASC"
+    }else if(orders==="desc"){
+      orders= "DESC"
+    }
+
+   // console.log(name, orders)
+    const productDB = await product?.findAndCountAll({
+      where: { 
+        name:{ [Op.iLike]: `%${nameproduct}%` },
+        deleteLogic: true, 
+        stock: { [Op.gt]: 0,}
+      },
+      order: [[`${name}`, `${orders}`]],
+      attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic" ],
+      limit: size,
+      offset: page * size,
+    })
+  return productDB;
 
 }
 

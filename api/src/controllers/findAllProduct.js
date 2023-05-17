@@ -6,7 +6,7 @@ const findAllProduct = async () => {
       include: {
         model: user,
         attributes: ["name"],
-  
+
       },
     });
 
