@@ -1,5 +1,10 @@
 const { product, Category, user } = require("../db");
 const { Op } = require("sequelize");
+const mercadopago = require("mercadopago");
+require("dotenv").config();
+mercadopago.configure({
+  access_token: process.env.ACCESS_TOKEN,
+});
 
 const popularProductByCategory = async (limit) => {
   try {
@@ -128,9 +133,38 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   newprod.addCategories(categoryID);
   return newprod;
 }
+const postPagoMercadoPago = async(products)=>{
+  let preference = {
+    items:[],
+    
+    back_urls:{
+      success:"http://localhost:3001",
+      failure:"",
+      pending:"",
+    },
+    auto_return: "approved",//en este caso esta aprovado el pago
+    binary_mode:true,//acepta el pago pendiente
+  }
+  products.forEach(elem => {// aquí debo buscar en la base de datos e ir actualizando stock
+    preference.items.push({
+      id:elem.id,
+      title:elem.name,
+      category:"placa de video",
+      currency_id:"ARS",//pesos argentinos
+      picture_url:elem.img,
+      description:elem.description,
+      category_id: "art",
+      quantity: 2,
+      unit_price:elem.price
+    })
+  });
+  console.log(preference)
+  const dato = await mercadopago.preferences.create(preference)
+  return dato;
+}
 
 
 
-module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice };
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago };
 
 

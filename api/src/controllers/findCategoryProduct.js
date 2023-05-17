@@ -17,7 +17,7 @@ const findCategoryProduct = async (catname, page, size) => {
     limit: size,
     offset: page * size
   });
-
+  
   return prod_categ;
 }
 
