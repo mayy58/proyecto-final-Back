@@ -21,7 +21,7 @@ const getProduct = async (req, res) => {
         name ?
             prod = await getByNameProduct(name, page, size)
         :
-            prod = await findAllProduct() // a esta no le agrego paginado porque no se ha solicitado aun
+            prod = await findAllProduct(page, size) 
 
         res.status(200).json(prod);
     } catch (error) {
