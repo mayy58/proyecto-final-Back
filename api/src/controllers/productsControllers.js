@@ -46,6 +46,9 @@ const popularProductByCategory = async (limit) => {
 const findProductUser = async (nameuser) => {
 
   let prod_user = await product.findAll({
+    where: { 
+      deleteLogic: true, 
+      stock: {[Op.gt]: 0,}},
       include: {
           model: user,
           attributes: [ "name"],
@@ -76,43 +79,51 @@ const getOrderProduct = async(orders)=>{ // tendria que recivir el orden y el no
       return ordersProd;
 }
 
-//!Este controller busca los productos por rango de Precios
-const findProdCatPrice = async (namecategory, max, min) => {
+//!Este controller busca los productos por rango de Precios segun una categoria
+const findProdCatPrice = async (namecategory, max, min, page, size) => {
 
   const category = await Category.findOne({ where: { name: namecategory } });
   if(!category) throw new Error("La categoria especificada no existe")
+  
+  let prod_price = await product.findAndCountAll({
 
-  let prod_price = await product.findAll({
-     where: { 
-      price: {
-        [Op.between]: [min, max],
-      }
-    },
     include: {
       model: Category,
       where: {
         id: category.id
       },
-      through: { attributes: [] }
-    },});
-  return prod_price;
-}
-
-const findNameProdPrice = async (nameproduct, max, min) => {
-  let prod_price = await product.findAll({
-     where: { 
-      price: {
-        [Op.between]: [min, max],
-      },
-      name:{ 
-        [Op.iLike]: `%${nameproduct}%` 
-      }
+      through: { attributes: [], }
     },
-   });
+    
+     where: { 
+      price: { [Op.between]: [min, max], },
+      deleteLogic: true, 
+      stock: {[Op.gt]: 0,}
+  
+    },
+    limit: size,
+    offset: page * size
+  });
   return prod_price;
 }
 
-//! Controllers para cargar productos **** voy a suponer que me mandan el nombre de la categoria y no el ID pero si el id del usuario que lo carga
+//!Este controller busca los productos por rango de Precios segun un nombre de producto
+const findNameProdPrice = async (nameproduct, max, min, page, size) => {
+  let prod_price = await product.findAndCountAll({
+     where: { 
+      price: { [Op.between]: [min, max],  },
+      name:{ [Op.iLike]: `%${nameproduct}%` },
+      deleteLogic: true, 
+      stock: { [Op.gt]: 0,}
+    },
+    limit: size,
+    offset: page * size
+   });
+   
+  return prod_price;
+}
+
+//! Controllers para cargar productos 
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, categories, email}) =>{
   const iduser = await user.findOne({where: {email: email}});
   if(!iduser) throw new Error('El usuario no esta registrado');
