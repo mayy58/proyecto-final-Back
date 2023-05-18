@@ -1,8 +1,12 @@
 const { product, user } = require('../db')
+const { Op } = require('sequelize');
 
-const findAllProduct = async () => {
+const findAllProduct = async (page, size) => {
 
   let products = await product?.findAndCountAll({
+      where: { 
+        deleteLogic: true, 
+        stock: {[Op.gt]: 0,}},
       include: {
         model: user,
         attributes: ["name"],

@@ -1,11 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+
 const morgan = require("morgan");
-const passport = require("./utils/passportConfig");
-const session = require("express-session");
-
-const flash = require("express-flash");
-
 
 require("dotenv").config();
 const mainRouter = require("./routes/mainRouter.js");
@@ -17,9 +13,11 @@ server.use(express.json());
 
 server.name = "API";
 
-server.use(express.urlencoded({ extended: true }));
-server.use(cookieParser(process.env.SECRET_key));
-server.use(morgan("dev"));
+//middlewares-->antes de las rutas
+server.use(express.urlencoded({ extended: true })); //como proceso y recibo los datos
+
+server.use(cookieParser());
+server.use(morgan("dev")); //muestro lo cliente me pide.lo necesito para saber que me esta pidiendo la app get post milisegundos etc
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Credentials", "true");
@@ -31,21 +29,7 @@ server.use((req, res, next) => {
   next();
 });
 
-
-server.use(flash());
-
-
-server.use(
-  session({
-    secret: process.env.SECRET_key,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
-
-server.use(passport.initialize());
-server.use(passport.session());
-
+//Routes
 server.use(mainRouter);
 server.use("/", loginRouter);
 
