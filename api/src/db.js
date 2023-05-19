@@ -42,7 +42,7 @@ detailOrder.belongsTo(order);
 user.hasMany(product);
 product.belongsTo(user);
 
-user.hasMany.order;
+user.hasMany(order);
 order.belongsTo(user);
 
 module.exports = {
