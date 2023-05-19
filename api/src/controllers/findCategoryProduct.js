@@ -1,4 +1,5 @@
 const { product, Category } = require('../db');
+const { Op } = require('sequelize'); 
 
 //! Este controller busca y retorna todos los productos
 const findCategoryProduct = async (catname, page, size) => {
@@ -7,6 +8,9 @@ const findCategoryProduct = async (catname, page, size) => {
   if(!category) throw new Error("La categoria especificada no existe")
 
   const prod_categ = await product.findAndCountAll({
+    where: { 
+      deleteLogic: true, 
+      stock: {[Op.gt]: 0,}},
     include: {
       model: Category,
       where: {

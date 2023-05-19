@@ -38,10 +38,23 @@ const getProductsUser = async (req, res) => {
  //! Handlers para traer los productos por un rango de precios por nombre de producto
  //!recibo el nombre por params y los rangos por query
  const getPriceRangeName = async (req, res) => {
+     //* paginado
+     const pageAsNumber = Number.parseInt(req.query.page);
+     const sizeAsNumbre = Number.parseInt(req.query.size);
+     
+     let page = 0;
+     if(!Number.isNaN(pageAsNumber) && pageAsNumber > 0) 
+         page = pageAsNumber;
+     
+     let size = 6;
+     if(!Number.isNaN(sizeAsNumbre) && sizeAsNumbre > 0 && sizeAsNumbre < 10) 
+         size = sizeAsNumbre;
+     
+     //****** */
   try {
     const { max, min } = req.query;
     const {nameproduct} = req.params;
-    const prodPrice = await findNameProdPrice(nameproduct, max, min);
+    const prodPrice = await findNameProdPrice(nameproduct, max, min, page, size);
     res.status(200).json(prodPrice);
     
   } catch (error) {
@@ -53,10 +66,23 @@ const getProductsUser = async (req, res) => {
   //! Handlers para traer los productos por un rango de precios por categoria
   //!recibo la categoria por params y los rangos por query
   const getPriceRangeCategory = async (req, res) => {
+       //* paginado
+       const pageAsNumber = Number.parseInt(req.query.page);
+       const sizeAsNumbre = Number.parseInt(req.query.size);
+       
+       let page = 0;
+       if(!Number.isNaN(pageAsNumber) && pageAsNumber > 0) 
+           page = pageAsNumber;
+       
+       let size = 6;
+       if(!Number.isNaN(sizeAsNumbre) && sizeAsNumbre > 0 && sizeAsNumbre < 10) 
+           size = sizeAsNumbre;
+       
+       //****** */
     try {
       const { max, min } = req.query;
       const {namecategory} = req.params;
-      const prodPrice = await findProdCatPrice(namecategory, max, min);
+      const prodPrice = await findProdCatPrice(namecategory, max, min, page, size);
       res.status(200).json(prodPrice);
       
     } catch (error) {
