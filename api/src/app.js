@@ -5,7 +5,7 @@ const morgan = require("morgan");
 
 require("dotenv").config();
 const mainRouter = require("./routes/mainRouter.js");
-const loginRouter = require("./routes/loginRouter");
+
 const googleRouter = require("./routes/googleRoutes.js");
 require("./middlewares/google.js");
 require("./db.js");
@@ -46,7 +46,6 @@ server.use(
 );
 
 server.use(mainRouter);
-server.use("/", loginRouter);
 
 // Error catching endware.
 server.use((err, req, res, next) => {

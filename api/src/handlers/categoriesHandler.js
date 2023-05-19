@@ -3,6 +3,7 @@ const {
   incrementPopularity,
   createCategory,
 } = require("../controllers/categoriesControllers");
+const getOrderNameCategoryControllers = require("../controllers/getOrderNameCategoryControllers");
 
 const getAllCategories = async (req, res) => {
   try {
@@ -34,4 +35,20 @@ const setCategories = async (req, res) => {
   }
 };
 
-module.exports = { getAllCategories, morePopularCategory, setCategories };
+ 
+
+
+const getOrderNameCategry = async (req, res) => {
+  try {
+    const { name, orders} = req.query;
+    const response = await getOrderNameCategoryControllers({ name, orders});
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+
+module.exports = { getAllCategories, morePopularCategory, setCategories, getOrderNameCategry };
+

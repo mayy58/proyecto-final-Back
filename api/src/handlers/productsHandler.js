@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago } = require("../controllers/productsControllers");
 
 const getPopularProduct = async () => {
   try {
@@ -77,6 +77,21 @@ const getProductsUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+///hecho por nelson para despues controlar en el pull marge request
+//Para obtener los datos desde el front
+const postShoppingHandler = async(req, res)=>{
+  try {
+   const products =  req.body
+ 
+    const newShoping = await postPagoMercadoPago(products)
+    console.log(newShoping)
+    res.status(200).json(newShoping)
+ 
+  } catch (error) {
+    res.status(404).json({error:error.message})
+  }
+ }
 
-module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory};
+
+module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory, postShoppingHandler};
 
