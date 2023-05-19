@@ -42,7 +42,6 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("USADO", "NUEVO"),
       defaultValue: "NUEVO",
     },
-
     deleteLogic: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

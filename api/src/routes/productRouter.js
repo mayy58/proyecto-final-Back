@@ -1,4 +1,5 @@
 const { Router } = require("express");
+
 const getProduct = require("../handlers/getProduct");
 const getProductByID = require("../handlers/getProductByID");
 const {
@@ -9,11 +10,14 @@ const {
   setProduct,
   getPriceRangeName,
   postShoppingHandler,
+  upDateProductHandler
 } = require("../handlers/productsHandler");
-const productRouter = Router();
+
+
 const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
 
 productRouter.get("/", getProduct);
+productRouter.put("/:id", upDateProductHandler)
 productRouter.get("/:id", getProductByID);
 productRouter.get("/popular", getPopularProduct);
 productRouter.get("/user/:nameuser", getProductsUser);
@@ -29,5 +33,5 @@ productRouter.post("/payment", postShoppingHandler);
 productRouter.get("/order/name/:nameproduct", getOrderNameProductPriceAlf) //http://localhost:3001/product/order/name/nameproduct?name=samsgung Galaxi&priceMin=10&priceMax=800
 productRouter.post("/", setProduct)
 
-
 module.exports = productRouter;
+
