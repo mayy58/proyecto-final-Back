@@ -1,4 +1,5 @@
 const { Router } = require("express");
+
 const getProduct = require("../handlers/getProduct");
 const getProductByID = require("../handlers/getProductByID");
 const {
@@ -9,11 +10,13 @@ const {
   setProduct,
   getPriceRangeName,
   postShoppingHandler,
+  upDateProductHandler,
 } = require("../handlers/productsHandler");
-const productRouter = Router();
+
 const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
 
 productRouter.get("/", getProduct);
+productRouter.put("/:id", upDateProductHandler);
 productRouter.get("/:id", getProductByID);
 productRouter.get("/popular", getPopularProduct);
 productRouter.get("/user/:nameuser", getProductsUser);
