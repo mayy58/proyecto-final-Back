@@ -20,16 +20,23 @@ loginRouter.post("/login", async (req, res) => {
         .json({ message: `Nickname o Password incorrecto` });
     } else {
       const token = jwt.sign(
-        { id: User.id, nickname: User.nickname },
+        {
+          id: User.id,
+          nickname: User.nickname,
+          email: User.email,
+          roll: User.roll,
+        },
         process.env.SECRET_key,
         {
           expiresIn: 86400,
         }
       );
       return res.status(200).json({
-        id: User.id,
+        mail: User.mail,
         nickname: User.nickname,
+        address: User.address,
         token,
+        exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
       });
     }
   } catch (error) {
@@ -68,16 +75,24 @@ loginRouter.post("/create", async (req, res) => {
     });
 
     const token = jwt.sign(
-      { id: usernew.id, nickname: usernew.nickname },
+      {
+        id: usernew.id,
+        nickname: usernew.nickname,
+        email: usernew.email,
+        roll: usernew.roll,
+      },
       process.env.SECRET_key,
       {
         expiresIn: 86400,
       }
     );
     res.status(200).json({
-      id: usernew.id,
+      message: "Usuario creado con exito.",
       nickname: usernew.nickname,
+      email: usernew.email,
+      address: usernew.address,
       token,
+      exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
