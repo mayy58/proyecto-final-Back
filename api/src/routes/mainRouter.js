@@ -11,7 +11,7 @@ const userRouter = require("./userRouter");
 mainRouter.use("/product", productRouter);
 mainRouter.use("/categories", categoryRouter);
 mainRouter.use("/order", orderRouter);
-mainRouter.use("/user", loginRouter);
 mainRouter.use("/users", userRouter);
+mainRouter.use("/user", loginRouter);
 
 module.exports = mainRouter;
