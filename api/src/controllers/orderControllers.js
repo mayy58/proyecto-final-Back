@@ -1,41 +1,65 @@
-const { order, detailOrder } = require("../db");
+const { order, detailOrder, user, product } = require("../db");
 
 //! Crear orden y Detalle de orden
-const createOrderYDetail = async ({arrayorder})=>{
-    //tiene que entrar un [{order1},{order2},{order3}]
+const createOrderYDetail = async (ord)=>{
 
-    for (const ord of arrayorder) {
-        // ord = {userid, orderDate, totalAmount, paymentMethod, products[{}, {}, {}]}
-        // aca desectructurar ord
-        const {userid, orderDate, totalAmount, paymentMethod, products } = ord;
-        const o = await order.create({orderDate, totalAmount, paymentMethod, userid});
-        const orderid = o.id;
-        for (const product of products) {
-            //iterador = { quantity, productid}
+        const {comprador, fecha, total, metodoDePago, productos } = ord;
+        let use = {};
+        let o = {};
+        try {
+          use = await user.findOne({where: {email: comprador}})
+          console.log('Usuario Comprador Encontrado');
+        } catch (error) {
+          console.error('Usuario no registrado');
+          throw Error('Usuario no registrado');
+        }
+                
+        const userId = use.id;
+        console.log("ID DE USUARIO:", userId);
+        try {
+          o = await order.create({orderDate: fecha, totalAmount: total, paymentMethod: metodoDePago, userId });
+          console.log('Orden creado:');
+        } catch (error) {
+          console.error('Error al crear la orden:');
+          throw Error('Error al crear la orden:');
+        }
+        
+        const orderId = o.id;
+        for (const prod of productos) {
+
             // aca desectructurar product
-            const {quantity, productid} = product;
+            const {cantidad, id} = prod;
             
             try {
-                const createdDetailOrder = await detailOrder.create({ quantity, productid, orderid });
-                console.log('Detalle de orden creado:', createdDetailOrder);
+                const d = await detailOrder.create({ quantity: cantidad, productId: id, orderId });
+                console.log('Detalle de orden creado:');
               } catch (error) {
-                console.error('Error al crear el detalle de orden:', error);
+                console.error('Error al crear el detalle de orden:');
+                throw Error('Error al crear el detalle de orden:');
               }
 
             try {
-                await product.increment({ stock: -quantity }, { where: { id: productid }});
+                const p = await product.findByPk(id)
+                await p.increment('stock',{by: -cantidad } );
                 // La actualización se realizó exitosamente
                 console.log('Actualización de stock exitosa');
-                const p = product.findByPk({where: { id: productid}});
-                if(p.stock <= 0) await product.update({ deleteLogic: false}, {where: { id: productid}},)
-                console.log('Borrado Logico de stock exitoso');
+                
+                if(p.stock <= 0) {
+                  try {
+                    await product.update({ deleteLogic: false}, {where: { id: id}},)
+                    console.log('Borrado Logico de product exitoso');                    
+                  } catch (error) {
+                    console.error('Error actualizar borrado logico de producto:');
+                    throw Error('Error actualizar borrado logico de producto:');
+                  }
+                }
               } catch (error) {
                 // Error durante la actualización
-                console.error('Error al actualizar el stock:', error);
+                console.error('Error al actualizar el stock:');
+                throw Error('Error al actualizar el stock:');
               }
 
         }
-    }
 
     return 'Orden registrada con exito';  
 
@@ -44,11 +68,11 @@ const createOrderYDetail = async ({arrayorder})=>{
 //! Actualizar orden
 const updateStateOrder = async (estado, orderid) => {
   try {
-    await order.update({status: estado,}, {where: {id: orderid}});
+        
+    if(estado === 'ENTREGADO' || estado === 'RECHAZADO' || estado === 'CANCELADO')
+      await order.update({ deleteLogic: false, status: estado,}, {where: {id: orderid}});
     
-    if(estado === 'ENTREGADO' || estado === 'RECHAZADO' || estado === 'CANCELADO'){
-      await order.update({ deleteLogic: false,}, {where: {id: orderid}});
-    }
+    else await order.update({status: estado,}, {where: {id: orderid}});
     
     // La actualización se realizó exitosamente
     console.log('Actualización de orden exitosa');
@@ -65,5 +89,13 @@ const updateStateOrder = async (estado, orderid) => {
 module.exports = {
   createOrderYDetail,
   updateStateOrder,
-  updateCloseOrder
+  //updateCloseOrder
 };
+
+
+// try {
+  
+//   console.log('Detalle de orden creado:', createdDetailOrder);
+// } catch (error) {
+//   console.error('Error al crear el detalle de orden:', error);
+// }
