@@ -1,7 +1,7 @@
+
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
-// Exportamos una funcion que define el modelo
-// Luego le injectamos la conexion a sequelize.
+
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define(
@@ -9,7 +9,6 @@ module.exports = (sequelize) => {
     {
       id: {
         type: DataTypes.INTEGER,
-
         primaryKey: true,
         autoIncrement: true,
       },
@@ -57,6 +56,9 @@ module.exports = (sequelize) => {
     },
     {
       timestamps: false,
-    }
-  );
+
+    }
+  );
 };
+
+
