@@ -13,10 +13,13 @@ const {
   upDateProductHandler,
 } = require("../handlers/productsHandler");
 
+const { verifyToken, isSeller } = require("../middlewares/authJwt");
 const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
 
+productRouter = Router();
+
 productRouter.get("/", getProduct);
-productRouter.put("/:id", upDateProductHandler);
+productRouter.put("/:id", [verifyToken, isSeller], upDateProductHandler);
 productRouter.get("/:id", getProductByID);
 productRouter.get("/popular", getPopularProduct);
 productRouter.get("/user/:nameuser", getProductsUser);
