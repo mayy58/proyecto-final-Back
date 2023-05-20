@@ -28,14 +28,14 @@ const createOrderYDetail = async (ord)=>{
         for (const prod of productos) {
 
             // aca desectructurar product
-            const {cantidad, id} = prod;
+            const {cantidad, id, price} = prod;
             
             try {
-                const d = await detailOrder.create({ quantity: cantidad, productId: id, orderId });
+                const d = await detailOrder.create({ quantity: cantidad, productId: id, orderId , purchaseprice: price});
                 console.log('Detalle de orden creado:');
               } catch (error) {
-                console.error('Error al crear el detalle de orden:');
-                throw Error('Error al crear el detalle de orden:');
+                console.error('Error al crear el detalle de orden:',error);
+                throw Error('Error al crear el detalle de orden:',error);
               }
 
             try {

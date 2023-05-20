@@ -125,25 +125,50 @@ const findNameProdPrice = async (nameproduct, max, min, page, size) => {
 
 //! Controllers para cargar productos 
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, categories, email}) =>{
-  const iduser = await user.findOne({where: {email: email}});
-  if(!iduser) throw new Error('El usuario no esta registrado');
+  let iduser = {};
+  try {
+    iduser = await user.findOne({where: {email: email}});
+    console.log("Usuario encontrado");
+  } catch (error) {
+    throw new Error('El usuario no esta registrado', error);
+  }
+  
   const userId  = iduser.id;
   // le cambio el rol al usuario a vendedor
-  await user.update({ roll: 'SELLER', }, { where: { id: userId,} })
-  const categoryID = await Category.findOne({where: { name: categories }});
-  if(!categoryID) throw new Error('Categoria Incorrecta');
-  const newprod = await product.create({ 
-    name, 
-    img, 
-    stock, 
-    description, 
-    price, 
-    isOnSale, 
-    salePrice, 
-    status,
-    userId
-  });
+  try {
+    await user.update({ roll: 'SELLER', }, { where: { id: userId,} });
+    console.log("Actualizacion realizada");
+  } catch (error) {
+    throw new Error('Error al actualizar usuario a SELLER', error);
+  }
+  let categoryID = {}
+  try {
+    categoryID = await Category.findOne({where: { name: categories }});
+    console.log("Categoria encontrada");
+  } catch (error) {
+    throw new Error('Categoria Incorrecta', error);
+  }
+  
+  let newprod={};
+  try {
+    newprod = await product.create({ 
+      name, 
+      img, 
+      stock, 
+      description, 
+      price, 
+      isOnSale, 
+      salePrice, 
+      status,
+      userId
+    });
+    console.log("Creacion de producto Realizado");
+  } catch (error) {
+    throw new Error("Error en la Creacion de producto", error);
+  }
+    
   newprod.addCategories(categoryID);
+  console.log("Relacion con tabla categoria realizada");
   return newprod;
 }
 

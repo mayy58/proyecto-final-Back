@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 
-
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define("product", {
@@ -42,6 +41,7 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("USADO", "NUEVO"),
       defaultValue: "NUEVO",
     },
+
     deleteLogic: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

@@ -1,10 +1,10 @@
 const { Router } = require("express");
-const { getUser, getShoppinghistory } = require("../handlers/userHandler")
+const { getShoppinghistory } = require("../handlers/userHandler")
 
 const userRouter = Router();
 
-userRouter.get("/", getUser);
 userRouter.get("/shoppinghistory", getShoppinghistory);
+//userRouter.get("/", getUser);
 
 //userRouter.post("/update", updateOrder);
 
