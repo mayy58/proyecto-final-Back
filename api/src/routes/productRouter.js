@@ -15,7 +15,9 @@ const {
 
 const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
 
-productRouter = Router();
+
+const productRouter = Router();
+
 
 productRouter.get("/", getProduct);
 productRouter.put("/:id", upDateProductHandler);
