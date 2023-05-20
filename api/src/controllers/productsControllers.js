@@ -128,6 +128,8 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   const iduser = await user.findOne({where: {email: email}});
   if(!iduser) throw new Error('El usuario no esta registrado');
   const userId  = iduser.id;
+  // le cambio el rol al usuario a vendedor
+  await user.update({ roll: 'SELLER', }, { where: { id: userId,} })
   const categoryID = await Category.findOne({where: { name: categories }});
   if(!categoryID) throw new Error('Categoria Incorrecta');
   const newprod = await product.create({ 
@@ -144,6 +146,7 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   newprod.addCategories(categoryID);
   return newprod;
 }
+
 const postPagoMercadoPago = async(products)=>{
   let preference = {
     items:[],
