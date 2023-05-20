@@ -177,8 +177,70 @@ const postPagoMercadoPago = async(products)=>{
   return dato;
 }
 
+const updateProductController = async ({
+  id,
+  name,
+  img,
+  stock,
+  description,
+  price,
+  isOnSale,
+  salePrice,
+  status,
+  deleteLogic,
+  categories,
+  email,
+  
+}) => {
+  console.log({
+    id,
+    name,
+    img,
+    stock,
+    description,
+    price,
+    isOnSale,
+    salePrice,
+    status,
+    deleteLogic,
+    categories,
+    email
+  })
 
+  const idProducto = parseInt(id) 
+  const iduser = await user.findOne({where: {email: email}});
+  if(!iduser) throw new Error('El usuario no esta registrado');
+  const userId  = iduser.id;
+  const idCategory = await Category.findOne({ where: { name: categories } });
+  const productInstance = await product.findByPk(idProducto);//Esto permite obtener el id del producto despues de eso obtenemos a que categoria esta relacionado este producto
+  if (!idCategory) throw new Error('Categoría incorrecta');
+  const updateprod = await product.update(
+    {
+      img,
+      name,
+      stock,
+      description,
+      price,
+      isOnSale,
+      salePrice,
+      status,
+      deleteLogic,
+      userId
+    },
+    {
+      where: {
+        id: idProducto
+      }
+    }
+  );
+  console.log(idProducto)
+  
+  await productInstance.addCategories(idCategory);// Aqui agregamos a esta instancia el idCategoria 
+  //a la tabla categoría de acuerdo al id del producto cuando la relaciones es de muchos a muchas
+  
+  return updateprod;
+};
 
-module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago };
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago, updateProductController };
 
 
