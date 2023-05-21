@@ -13,12 +13,10 @@ const server = express();
 server.use(express.json());
 
 server.name = "API";
-
-//middlewares-->antes de las rutas
-server.use(express.urlencoded({ extended: true })); //como proceso y recibo los datos
-
+server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+server.use(bodyParser.json({ limit: "50mb" }));
 server.use(cookieParser());
-server.use(morgan("dev")); //muestro lo cliente me pide.lo necesito para saber que me esta pidiendo la app get post milisegundos etc
+server.use(morgan("dev"));
 server.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Credentials", "true");
