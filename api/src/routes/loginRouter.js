@@ -14,7 +14,7 @@ loginRouter.post("/login", async (req, res) => {
     const passwordMatch = User
       ? await bcrypt.compare(password, User.password)
       : false;
-    if (!(User || passwordMatch)) {
+    if (!User || !passwordMatch) {
       return res
         .status(401)
         .json({ message: `Nickname o Password incorrecto` });
@@ -27,9 +27,9 @@ loginRouter.post("/login", async (req, res) => {
         }
       );
       return res.status(200).json({
-        id: User.id,
         nickname: User.nickname,
         token,
+        exp: Date.now() + (10 * 60 * 1000)
       });
     }
   } catch (error) {
@@ -75,6 +75,7 @@ loginRouter.post("/create", async (req, res) => {
       }
     );
     res.status(200).json({
+      message: "Usuario Creado con exito",
       id: usernew.id,
       nickname: usernew.nickname,
       token,
