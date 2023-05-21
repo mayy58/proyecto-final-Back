@@ -1,63 +1,51 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
-//const CountryModel = require("./models/CountryModel");
-//const ActivityModel = require("./models/ActivityModel");
-//
-//const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY } = process.env;
 
-//const sequelize = new Sequelize(
-//  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,
-//  {
-//    logging: false, // set to console.log to see the raw SQL queries
-//    native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-//  }
-//);
+const detailOrderModel = require("./models/detailOrderModel");
+const productModel = require("./models/productModel");
+const categoryModel = require("./models/CategoryModel");
+const orderModel = require("./models/orderModel");
+const userModel = require("./models/userModel");
 
-//const sequelize = new Sequelize(DB_DEPLOY, {
-//  logging: false, // set to console.log to see the raw SQL queries
-//  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-//});
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY } = process.env;
 
-const basename = path.basename(__filename);
+// const sequelize = new Sequelize(
+//   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,
+//   {
+//     logging: false,
+//     native: false,
+//   }
+// );
 
-const modelDefiners = [];
+const sequelize = new Sequelize(DB_DEPLOY, {
+ logging: false,
+ native: false,
+});
 
-// Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
-fs.readdirSync(path.join(__dirname, "/models"))
-  .filter(
-    (file) =>
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-  )
-  .forEach((file) => {
-    modelDefiners.push(require(path.join(__dirname, "/models", file)));
-  });
+detailOrderModel(sequelize);
+productModel(sequelize);
+categoryModel(sequelize);
+orderModel(sequelize);
+userModel(sequelize);
 
-// Injectamos la conexion (sequelize) a todos los modelos
-modelDefiners.forEach((model) => model(sequelize));
-// Capitalizamos los nombres de los modelos ie: product => Product
-let entries = Object.entries(sequelize.models);
-let capsEntries = entries.map((entry) => [
-  entry[0][0].toUpperCase() + entry[0].slice(1),
-  entry[1],
-]);
-sequelize.models = Object.fromEntries(capsEntries);
+const { product, detailOrder, Category, order, user } = sequelize.models;
 
-// En sequelize.models están todos los modelos importados como propiedades
-// Para relacionarlos hacemos un destructuring
-//CountryModel(sequelize);
-//ActivityModel(sequelize);
-//
-//// Aca vendrian las relaciones
-//// Product.hasMany(Reviews);
-//
-//const { Country, Activity } = sequelize.models;
-//
-//Country.belongsToMany(Activity, { through: "Country_Activity" });
-//Activity.belongsToMany(Country, { through: "Country_Activity" });
+product.hasMany(detailOrder);
+detailOrder.belongsTo(product);
+
+Category.belongsToMany(product, { through: "categoryproduct" });
+product.belongsToMany(Category, { through: "categoryproduct" });
+
+order.hasMany(detailOrder);
+detailOrder.belongsTo(order);
+
+user.hasMany(product);
+product.belongsTo(user);
+
+user.hasMany(order);
+order.belongsTo(user);
 
 module.exports = {
-  ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize, // para importart la conexión { conn } = require('./db.js');
+  ...sequelize.models,
+  conn: sequelize,
 };

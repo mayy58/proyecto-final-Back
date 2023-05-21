@@ -1,9 +1,13 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
+const passport = require("passport");
 const morgan = require("morgan");
+
+require("dotenv").config();
 const mainRouter = require("./routes/mainRouter.js");
 
+const googleRouter = require("./routes/googleRoutes.js");
+require("./middlewares/google.js");
 require("./db.js");
 const server = express();
 server.use(express.json());
@@ -24,8 +28,22 @@ server.use((req, res, next) => {
   next();
 });
 
+server.use(passport.initialize());
+
+//Routes
+server.use(
+  "/auth",
+  passport.authenticate("auth-google", {
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+    ],
+    session: false,
+  }),
+  googleRouter
+);
+
 server.use(mainRouter);
-//server.use("/", routes);
 
 // Error catching endware.
 server.use((err, req, res, next) => {
