@@ -1,16 +1,14 @@
 const { DataTypes } = require("sequelize");
-// Exportamos una funcion que define el modelo
-// Luego le injectamos la conexion a sequelize.
+
 module.exports = (sequelize) => {
-  // defino el modelo
+
   sequelize.define(
     "order",
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncremet: true,
-        allowNull: false,
+        autoIncrement: true,
       },
       orderDate: {
         type: DataTypes.DATEONLY,
@@ -28,6 +26,7 @@ module.exports = (sequelize) => {
           "RECHAZADO",
           "CANCELADO"
         ),
+        defaultValue: "PENDIENTE",
       },
       paymentMethod: {
         type: DataTypes.STRING,

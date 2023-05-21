@@ -125,25 +125,53 @@ const findNameProdPrice = async (nameproduct, max, min, page, size) => {
 
 //! Controllers para cargar productos 
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, categories, email}) =>{
-  const iduser = await user.findOne({where: {email: email}});
-  if(!iduser) throw new Error('El usuario no esta registrado');
+  let iduser = {};
+  try {
+    iduser = await user.findOne({where: {email: email}});
+    console.log("Usuario encontrado");
+  } catch (error) {
+    throw new Error('El usuario no esta registrado', error);
+  }
+  
   const userId  = iduser.id;
-  const categoryID = await Category.findOne({where: { name: categories }});
-  if(!categoryID) throw new Error('Categoria Incorrecta');
-  const newprod = await product.create({ 
-    name, 
-    img, 
-    stock, 
-    description, 
-    price, 
-    isOnSale, 
-    salePrice, 
-    status,
-    userId
-  });
+  // le cambio el rol al usuario a vendedor
+  try {
+    await user.update({ roll: 'SELLER', }, { where: { id: userId,} });
+    console.log("Actualizacion realizada");
+  } catch (error) {
+    throw new Error('Error al actualizar usuario a SELLER', error);
+  }
+  let categoryID = {}
+  try {
+    categoryID = await Category.findOne({where: { name: categories }});
+    console.log("Categoria encontrada");
+  } catch (error) {
+    throw new Error('Categoria Incorrecta', error);
+  }
+  
+  let newprod={};
+  try {
+    newprod = await product.create({ 
+      name, 
+      img, 
+      stock, 
+      description, 
+      price, 
+      isOnSale, 
+      salePrice, 
+      status,
+      userId
+    });
+    console.log("Creacion de producto Realizado");
+  } catch (error) {
+    throw new Error("Error en la Creacion de producto", error);
+  }
+    
   newprod.addCategories(categoryID);
+  console.log("Relacion con tabla categoria realizada");
   return newprod;
 }
+
 const postPagoMercadoPago = async(products)=>{
   let preference = {
     items:[],
@@ -174,8 +202,70 @@ const postPagoMercadoPago = async(products)=>{
   return dato;
 }
 
+const updateProductController = async ({
+  id,
+  name,
+  img,
+  stock,
+  description,
+  price,
+  isOnSale,
+  salePrice,
+  status,
+  deleteLogic,
+  categories,
+  email,
+  
+}) => {
+  console.log({
+    id,
+    name,
+    img,
+    stock,
+    description,
+    price,
+    isOnSale,
+    salePrice,
+    status,
+    deleteLogic,
+    categories,
+    email
+  })
 
+  const idProducto = parseInt(id) 
+  const iduser = await user.findOne({where: {email: email}});
+  if(!iduser) throw new Error('El usuario no esta registrado');
+  const userId  = iduser.id;
+  const idCategory = await Category.findOne({ where: { name: categories } });
+  const productInstance = await product.findByPk(idProducto);//Esto permite obtener el id del producto despues de eso obtenemos a que categoria esta relacionado este producto
+  if (!idCategory) throw new Error('Categoría incorrecta');
+  const updateprod = await product.update(
+    {
+      img,
+      name,
+      stock,
+      description,
+      price,
+      isOnSale,
+      salePrice,
+      status,
+      deleteLogic,
+      userId
+    },
+    {
+      where: {
+        id: idProducto
+      }
+    }
+  );
+  console.log(idProducto)
+  
+  await productInstance.addCategories(idCategory);// Aqui agregamos a esta instancia el idCategoria 
+  //a la tabla categoría de acuerdo al id del producto cuando la relaciones es de muchos a muchas
+  
+  return updateprod;
+};
 
-module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago };
+module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago, updateProductController };
 
 

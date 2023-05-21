@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController } = require("../controllers/productsControllers");
 
 const getPopularProduct = async () => {
   try {
@@ -117,7 +117,20 @@ const postShoppingHandler = async(req, res)=>{
     res.status(404).json({error:error.message})
   }
  }
+ const upDateProductHandler = async (req, res) =>{
+
+  const { id } = req.params;
+  const { name, img, stock, description, price, isOnSale, salePrice,
+      status, deleteLogic, categories,email  } = req.body;
+  try {
+      await updateProductController({id, name, img, stock, description, price, isOnSale, salePrice,
+          status, deleteLogic, categories,email});
+      res.status(200).send("El producto ha sido modificado con exito")
+  } catch (error) {
+      res.status(404).json({error: error.message})
+  }
+}
 
 
-module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory, postShoppingHandler};
+module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory, postShoppingHandler, upDateProductHandler};
 
