@@ -1,4 +1,3 @@
-
 const { DataTypes } = require("sequelize");
 const bcrypt = require("bcrypt");
 
@@ -56,9 +55,6 @@ module.exports = (sequelize) => {
     },
     {
       timestamps: false,
-
     }
   );
 };
-
-
