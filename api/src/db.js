@@ -3,7 +3,7 @@ const { Sequelize } = require("sequelize");
 
 const detailOrderModel = require("./models/detailOrderModel");
 const productModel = require("./models/productModel");
-const categoryModel = require("./models/CategoryModel");
+const categoryModel = require("./models/categoryModel");
 const orderModel = require("./models/orderModel");
 const userModel = require("./models/userModel");
 
