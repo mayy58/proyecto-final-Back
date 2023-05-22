@@ -1,7 +1,6 @@
 const { Router } = require("express");
 
 const jwt = require("jsonwebtoken");
-const passport = require("passport");
 const { user } = require("../db");
 require("dotenv").config();
 
