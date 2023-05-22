@@ -64,4 +64,8 @@ console.log("Solicitud Completada");
 return history;
 }
 
-module.exports = { ShoppinghistoryUser };
+const putUserController =({id, name, nickname})=>{
+    
+}
+
+module.exports = { ShoppinghistoryUser,putUserController };

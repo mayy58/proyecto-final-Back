@@ -1,4 +1,4 @@
-const { ShoppinghistoryUser} = require("../controllers/userControllers")
+const { ShoppinghistoryUser, putUserController} = require("../controllers/userControllers")
 
 
 // const getUser = async (req, res) =>{
@@ -11,7 +11,15 @@ const { ShoppinghistoryUser} = require("../controllers/userControllers")
 //     }
 
 // }
-
+const putUserHandler =(req, res)=>{
+    try {
+        const { id } = req.query;
+        const {name, nickname} = req.body
+        const response = putUserController({id, name, nickname})
+    } catch (error) {
+        
+    }
+}
 
 const getShoppinghistory = async (req, res) =>{
     try {
@@ -25,5 +33,5 @@ const getShoppinghistory = async (req, res) =>{
 
 }
 module.exports = {
-    getShoppinghistory
+    getShoppinghistory,putUserHandler
   };
