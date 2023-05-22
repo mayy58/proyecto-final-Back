@@ -41,7 +41,7 @@ googleRouter.get("/google/redirect", async (req, res) => {
     //   token,
     //   exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     // });
-    const redirectURL = `https://proyecto-final-two-tau.vercel.app/loginGoogle/?token=${encodeURIComponent(
+    const redirectURL = `https://proyecto-final-9tt4gon2d-tomsandoval.vercel.app/loginGoogle?token=${encodeURIComponent(
       token
     )}&tokenExpiration=${encodeURIComponent(
       tokenExpiration
