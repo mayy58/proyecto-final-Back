@@ -3,7 +3,6 @@ const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { user } = require("../db");
-
 require("dotenv").config();
 
 const googleRouter = Router();
@@ -19,7 +18,7 @@ googleRouter.get("/google/redirect", async (req, res) => {
 
     const userGoogle = await user.findOne({
       where: { email: usergoogle.emails[0].value },
-    })
+    });
 
     const token = jwt.sign(
       {
