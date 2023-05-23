@@ -42,11 +42,15 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
       },
       roll: {
-        type: DataTypes.ENUM("USER", "ADMIN", "SELLER"),
+        type: DataTypes.ENUM("USER", "ADMIN", "SELLER", "SUPER"),
         defaultValue: "USER",
       },
       googleId: {
         type: DataTypes.STRING,
+      },
+      picture:{
+        type: DataTypes.STRING(500),
+        allowNull: true,
       },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
