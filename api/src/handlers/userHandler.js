@@ -14,7 +14,7 @@ const { ShoppinghistoryUser, putUserController} = require("../controllers/userCo
 const putUserHandler =(req, res)=>{
     try {
         const { id } = req.query;
-        const {name, nickname} = req.body
+        const {name, lastname, birthDate, address, roll, deleteLogic} = req.body
         const response = putUserController({id, name, nickname})
     } catch (error) {
         
