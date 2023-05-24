@@ -2,7 +2,6 @@ const { Router } = require("express");
 
 const jwt = require("jsonwebtoken");
 const { user } = require("../db");
-
 require("dotenv").config();
 const googleRouter = Router();
 
@@ -41,7 +40,7 @@ googleRouter.get("/google/redirect", async (req, res) => {
     //   token,
     //   exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     // });
-    const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(
+    const redirectURL = `https://proyecto-final-9tt4gon2d-tomsandoval.vercel.app/loginGoogle?token=${encodeURIComponent(
       token
     )}&tokenExpiration=${encodeURIComponent(
       tokenExpiration
