@@ -1,67 +1,78 @@
 const { order, detailOrder, user, product } = require("../db");
 
+//! Funcion auxiliar para actualizar stock
+
+const ActualizarStock= async (id,cantidad) =>{
+  try {
+    const p = await product.findByPk(id)
+    if(p.stock < cantidad) throw Error("No se puede una cantidad mayor")
+    await p.increment('stock',{by: -cantidad } );
+    // La actualización se realizó exitosamente
+    console.log('Actualización de stock exitosa');
+    
+    if(p.stock <= 0) {
+      try {
+        await product.update({ deleteLogic: false}, {where: { id: id}},)
+        console.log('Borrado Logico de product exitoso');                    
+      } catch (error) {
+        console.error('Error actualizar borrado logico de producto:');
+        throw Error('Error actualizar borrado logico de producto:');
+      }
+    }
+  } catch (error) {
+    // Error durante la actualización
+    console.error('Error al actualizar el stock:');
+    throw Error('Error al actualizar el stock:');
+  }
+}
+
 //! Crear orden y Detalle de orden
-const createOrderYDetail = async (ord)=>{
+const createOrderYDetail = async (arrsyOrd)=>{
 
-        const {comprador, fecha, total, metodoDePago, productos } = ord;
-        let use = {};
-        let o = {};
-        try {
-          use = await user.findOne({where: {email: comprador}})
-          console.log('Usuario Comprador Encontrado');
-        } catch (error) {
-          console.error('Usuario no registrado');
-          throw Error('Usuario no registrado');
-        }
-                
-        const userId = use.id;
-        console.log("ID DE USUARIO:", userId);
-        try {
-          o = await order.create({orderDate: fecha, totalAmount: total, paymentMethod: metodoDePago, userId });
-          console.log('Orden creado:');
-        } catch (error) {
-          console.error('Error al crear la orden:');
-          throw Error('Error al crear la orden:');
-        }
+  console.log(arrsyOrd);
+
+  for (const ord of arrsyOrd) {
+
+    const {comprador, fecha, metodoDePago, productos, total, userId } = ord;
+    let use = {};
+    let o = {};
+    // obtengo id de usuario comprador
+    try {
+      use = await user.findOne({where: {email: comprador}})
+      use ? console.log('Usuario Comprador Encontrado') : console.log('Usuario Comprador NO Encontrado');
+    } catch (error) {
+      console.error('Usuario no registrado');
+      throw Error('Usuario no registrado',error);
+    }
+    const userCid = use.id; 
+
+    try {
+      o = await order.create({orderDate: fecha, totalAmount: total, paymentMethod: metodoDePago, userId: userCid, sellerId: userId});
+      console.log('Orden creado:');
+    } catch (error) {
+      console.error('Error al crear la orden:');
+      throw Error('Error al crear la orden:');
+    }
+    // ahora el detalle
+    const orderId = o.id;
+
+    // ahora guardo en la tabla detaiOrder
+    for (const p of productos) {
+      const {cantidad, id, price} = p;
         
-        const orderId = o.id;
-        for (const prod of productos) {
-
-            // aca desectructurar product
-            const {cantidad, id, price} = prod;
-            
-            try {
-                const d = await detailOrder.create({ quantity: cantidad, productId: id, orderId , purchaseprice: price});
-                console.log('Detalle de orden creado:');
-              } catch (error) {
-                console.error('Error al crear el detalle de orden:',error);
-                throw Error('Error al crear el detalle de orden:',error);
-              }
-
-            try {
-                const p = await product.findByPk(id)
-                await p.increment('stock',{by: -cantidad } );
-                // La actualización se realizó exitosamente
-                console.log('Actualización de stock exitosa');
-                
-                if(p.stock <= 0) {
-                  try {
-                    await product.update({ deleteLogic: false}, {where: { id: id}},)
-                    console.log('Borrado Logico de product exitoso');                    
-                  } catch (error) {
-                    console.error('Error actualizar borrado logico de producto:');
-                    throw Error('Error actualizar borrado logico de producto:');
-                  }
-                }
-              } catch (error) {
-                // Error durante la actualización
-                console.error('Error al actualizar el stock:');
-                throw Error('Error al actualizar el stock:');
-              }
-
+      try {
+          const d = await detailOrder.create({ quantity: cantidad, productId: id, orderId , purchaseprice: price});
+          console.log('Detalle de orden creado:');
+        } catch (error) {
+          console.error('Error al crear el detalle de orden:',error);
+          throw Error('Error al crear el detalle de orden:',error);
         }
-
-    return 'Orden registrada con exito';  
+      ActualizarStock(id,cantidad);
+    }
+        
+  }
+ 
+  return 'Orden registrada con exito';  
 
 }
 
@@ -93,9 +104,3 @@ module.exports = {
 };
 
 
-// try {
-  
-//   console.log('Detalle de orden creado:', createdDetailOrder);
-// } catch (error) {
-//   console.error('Error al crear el detalle de orden:', error);
-// }

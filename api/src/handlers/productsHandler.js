@@ -1,4 +1,4 @@
-const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController, createReviewProduct, findReviewProduct } = require("../controllers/productsControllers");
 
 const getPopularProduct = async () => {
   try {
@@ -12,8 +12,8 @@ const getPopularProduct = async () => {
 //! Este Handler solicita los productos de un usuario a su controller
 const getProductsUser = async (req, res) => {
     try {
-        const { nameuser }  = req.params;
-        const prod = await findProductUser(nameuser);
+        const { useremail }  = req.params;
+        const prod = await findProductUser(useremail);
         res.status(200).json(prod);
 
     } catch (error) {
@@ -92,7 +92,6 @@ const getProductsUser = async (req, res) => {
    }
   
 
-
  //! Handlers para cargar productos setProduct
  const setProduct = async (req, res) => {
   try {
@@ -103,6 +102,29 @@ const getProductsUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+//! Handlers para cargar review de producto
+const setReviewProduct = async (req, res) => {
+  try {
+    const { id, punctuationproduct, punctuationseller, coment } = req.body;
+    const newReview = await createReviewProduct({ id, punctuationproduct, punctuationseller, coment });
+    res.status(200).json(newReview);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+//! Handlers para buscar review de producto
+const getReviewProduct = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const review = await findReviewProduct({ id });
+    res.status(200).json(review);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
 ///hecho por nelson para despues controlar en el pull marge request
 //Para obtener los datos desde el front
 const postShoppingHandler = async(req, res)=>{
@@ -132,5 +154,16 @@ const postShoppingHandler = async(req, res)=>{
 }
 
 
-module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory, postShoppingHandler, upDateProductHandler};
+module.exports = { 
+  getPopularProduct, 
+  getProductsUser, 
+  getOrderHanlderProducto, 
+  getPriceRangeName, 
+  setProduct, 
+  getPriceRangeCategory, 
+  postShoppingHandler, 
+  upDateProductHandler,
+  setReviewProduct,
+  getReviewProduct
+};
 
