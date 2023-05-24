@@ -1,4 +1,4 @@
-const { ShoppinghistoryUser, putUserController} = require("../controllers/userControllers")
+const { ShoppinghistoryUser, putUserController,getUserIdController, deleteLogicController} = require("../controllers/userControllers")
 
 
 // const getUser = async (req, res) =>{
@@ -11,13 +11,25 @@ const { ShoppinghistoryUser, putUserController} = require("../controllers/userCo
 //     }
 
 // }
-const putUserHandler =(req, res)=>{
+const getIdUserHandler= async(req, res)=>{
+    const { id } = req.params;
+    //console.log(id)
     try {
-        const { id } = req.query;
-        const {name, lastname, birthDate, address, roll, deleteLogic} = req.body
-        const response = putUserController({id, name, nickname})
+        const response = await getUserIdController(id)
+        res.status(200).json(response)
     } catch (error) {
-        
+        res.status(401).json({error:error.message})
+    }
+}
+//solo actualiza datos que no son sensibles
+const putUserHandler = async(req, res)=>{
+    try {
+        const { id } = req.params;
+        const {name, lastName, birthDate, address, picture} = req.body
+        const response = await putUserController({id, name, lastName, birthDate, address, picture})
+        res.status(200).send("¡Sus datos fueron módificados con exito!")
+    } catch (error) {
+        res.status(500).json({error:error.message})
     }
 }
 
@@ -32,6 +44,18 @@ const getShoppinghistory = async (req, res) =>{
     }
 
 }
+//solo realiza el borrado logico de la cuenta del usuario
+const deleteLogicHandler = async(req, res)=>{
+    try {
+        const { id } = req.params
+        const { deleteLogic } = req.body
+        deleteLogicController({id, deleteLogic})
+        res.status(200).send("¡Su cuenta ha sido dada de baja con exito!")
+    } catch (error) {
+        res.status(400).json({error:error.message})
+    }
+}
+
 module.exports = {
-    getShoppinghistory,putUserHandler
+    getShoppinghistory,putUserHandler,getIdUserHandler,deleteLogicHandler
   };
