@@ -47,4 +47,14 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-module.exports = { verifyToken, isSeller, isAdmin };
+const isSuperAdmin = async (req, res, next) => {
+  const supAdRoll = await user.findByPk(req.userId);
+  if (supAdRoll && supAdRoll.roll === "SUPERADMIN") {
+    next();
+    return;
+  } else {
+    return res.status(403).json({ message: "Requiere SuperAdmin Roll." });
+  }
+};
+
+module.exports = { verifyToken, isSeller, isAdmin, isSuperAdmin };

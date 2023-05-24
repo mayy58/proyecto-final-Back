@@ -42,13 +42,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
       },
       roll: {
-        type: DataTypes.ENUM("USER", "ADMIN", "SELLER", "SUPER"),
+        type: DataTypes.ENUM("USER", "ADMIN", "SUPERADMIN", "SELLER"),
         defaultValue: "USER",
       },
       googleId: {
         type: DataTypes.STRING,
       },
-      picture:{
+      picture: {
         type: DataTypes.STRING(500),
         allowNull: true,
       },
