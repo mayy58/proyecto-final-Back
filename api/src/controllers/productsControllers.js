@@ -1,4 +1,4 @@
-const { product, Category, user } = require("../db");
+const { product, Category, user, review } = require("../db");
 const { Op } = require("sequelize");
 const mercadopago = require("mercadopago");
 require("dotenv").config();
@@ -43,23 +43,46 @@ const popularProductByCategory = async (limit) => {
 };
 
 //! Este controller busca y retorna todos los productos de un usuario
-const findProductUser = async (nameuser) => {
+//! y debuelve dividido en activo e inactivos
+const findProductUser = async (useremail) => {
+  let prod_active = []
+  try {
+    prod_active = await product.findAll({
+      where: { 
+        deleteLogic: true, 
+        stock: {[Op.gt]: 0,}},
+        include: {
+            model: user,
+            attributes: [ "name"],
+            where: {
+              email: useremail
+          },
+        }}
+  );
+  } catch (error) {
+    console.log("Error al buscar los productos activos");
+  }
+    
+  let prod_inactive = [];
+  try {
+    prod_inactive = await product.findAll({
+      where: { 
+        deleteLogic: false, 
+      },
+        include: {
+            model: user,
+            attributes: [ "name"],
+            where: {
+              email: useremail
+          },
+        }}
+      );
+  } catch (error) {
+    console.log("Error al buscar los productos inactivos");
+  }
 
-  let prod_user = await product.findAll({
-    where: { 
-      deleteLogic: true, 
-      stock: {[Op.gt]: 0,}},
-      include: {
-          model: user,
-          attributes: [ "name"],
-          where: {
-            name: {
-              [Op.iLike]: `%${nameuser}%`,
-            }
-        },
-      }}
-);
-return prod_user;
+
+  return [prod_active, prod_inactive];
 }
 
 //ordena los productos
@@ -132,7 +155,6 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   } catch (error) {
     throw new Error('El usuario no esta registrado', error);
   }
-  
   const userId  = iduser.id;
   // le cambio el rol al usuario a vendedor
   try {
@@ -171,6 +193,34 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   console.log("Relacion con tabla categoria realizada");
   return newprod;
 }
+
+  //! Controller para cargar review de producto
+
+  const createReviewProduct = async (id, punctuationproduct, coment) => {
+    try {
+      const newReview = await review.create({punctuationproduct, coment, productId: id})
+    } catch (error) {
+      console.log("Error en la creacion del review");
+      throw Error("Error en la creacion del review");
+    }
+    return "Review cargado exitosamente"
+  }
+
+//! Controller para buscar un review
+
+const findReviewProduct = (id) => {
+  try {
+    const review = review.findAll({where: {productId: id}})
+  } catch (error) {
+    console.log("Error en la buscar el review");
+    throw Error("Error en la buscar el review");
+  }
+
+  return review;
+
+}
+
+
 
 const postPagoMercadoPago = async(products)=>{
   let preference = {
@@ -266,6 +316,17 @@ const updateProductController = async ({
   return updateprod;
 };
 
-module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago, updateProductController };
+module.exports = { 
+  popularProductByCategory, 
+  findProductUser, 
+  getOrderProduct, 
+  findProdCatPrice, 
+  createProduct, 
+  findNameProdPrice, 
+  postPagoMercadoPago, 
+  updateProductController,
+  createReviewProduct,
+  findReviewProduct
+ };
 
 

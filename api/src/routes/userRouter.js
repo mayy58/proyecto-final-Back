@@ -1,11 +1,10 @@
 const { Router } = require("express");
-const { getShoppinghistory } = require("../handlers/userHandler")
+const { getShoppinghistory, getSalesghistory } = require("../handlers/userHandler")
 
 const userRouter = Router();
 
 userRouter.get("/shoppinghistory", getShoppinghistory);
-//userRouter.get("/", getUser);
+userRouter.get("/saleshistory", getSalesghistory);
 
-//userRouter.post("/update", updateOrder);
 
 module.exports = userRouter;

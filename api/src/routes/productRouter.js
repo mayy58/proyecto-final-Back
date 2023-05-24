@@ -11,6 +11,8 @@ const {
   getPriceRangeName,
   postShoppingHandler,
   upDateProductHandler,
+  setReviewProduct,
+  getReviewProduct
 } = require("../handlers/productsHandler");
 
 const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
@@ -23,7 +25,7 @@ productRouter.get("/", getProduct);
 productRouter.put("/:id", upDateProductHandler);
 productRouter.get("/:id", getProductByID);
 productRouter.get("/popular", getPopularProduct);
-productRouter.get("/user/:nameuser", getProductsUser);
+productRouter.get("/user/:useremail", getProductsUser);
 productRouter.get("/order/orderPrice", getOrderHanlderProducto);
 
 productRouter.get("/pricerange/category/:namecategory", getPriceRangeCategory); // product/pricerange/category/Hogar?max=80000&min=5000
@@ -34,5 +36,8 @@ productRouter.post("/payment", postShoppingHandler);
 
 productRouter.get("/order/name/:nameproduct", getOrderNameProductPriceAlf); //http://localhost:3001/product/order/name/nameproduct?name=samsgung Galaxi&priceMin=10&priceMax=800
 productRouter.post("/", setProduct);
+
+productRouter.post("/review/:id", setReviewProduct)
+productRouter.get("/review/:id", getReviewProduct)
 
 module.exports = productRouter;
