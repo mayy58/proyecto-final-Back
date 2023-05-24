@@ -34,7 +34,7 @@ const ShoppinghistoryUser = async (email)=>{
 }
 
 //! Devuelve el historial de ventas de un usuario
-//! Falta probar
+
 const Saleshistoryuser = async (email) =>{
 
     //* busco primero el id del usuario
@@ -62,10 +62,63 @@ const Saleshistoryuser = async (email) =>{
         throw Error("Error al buscar ordenes con detalles", error);
     }
 
-    //* or deberia tener todas las ordenes con sus detalles de ese vendedor
     return or;
 
 }
 
 
-module.exports = { ShoppinghistoryUser, Saleshistoryuser };
+//obtenemos el usuario por id
+const getUserIdController= async(id)=>{
+    
+    try {
+        let users = await user.findByPk(id);
+        //console.log(users)
+        return users;
+    } catch (error) {
+        throw Error(`${error} user not found!`)
+    }
+ 
+}
+
+const putUserController = async({id, name, lastName, birthDate, address, picture}) =>{
+
+       
+        let upDateUsuario = await user.update(
+            {
+              name,
+              lastName,
+              birthDate,
+              address,
+              picture
+            }, 
+            {
+                where:{
+                    id: id
+                }
+            }
+            ) 
+
+        return upDateUsuario;
+        
+}
+const deleteLogicController = async({id, deleteLogic})=>{
+
+    try {
+        const users = await user.update({
+            deleteLogic
+        },
+        {
+            where:{
+                id:id
+            }
+        })
+        return users
+    } catch (error) {
+        throw Error(error)
+    }     
+    
+}
+
+module.exports = { ShoppinghistoryUser,putUserController, getUserIdController, deleteLogicController, Saleshistoryuser };
+
+

@@ -132,7 +132,7 @@ const postShoppingHandler = async(req, res)=>{
    const products =  req.body
  
     const newShoping = await postPagoMercadoPago(products)
-    console.log(newShoping)
+
     res.status(200).json(newShoping)
  
   } catch (error) {
