@@ -64,4 +64,56 @@ console.log("Solicitud Completada");
 return history;
 }
 
-module.exports = { ShoppinghistoryUser };
+//obtenemos el usuario por id
+const getUserIdController= async(id)=>{
+    
+    try {
+        let users = await user.findByPk(id);
+        //console.log(users)
+        return users;
+    } catch (error) {
+        throw Error(`${error} user not found!`)
+    }
+ 
+}
+
+const putUserController = async({id, name, lastName, birthDate, address, picture}) =>{
+
+       
+        let upDateUsuario = await user.update(
+            {
+              name,
+              lastName,
+              birthDate,
+              address,
+              picture
+            }, 
+            {
+                where:{
+                    id: id
+                }
+            }
+            ) 
+
+        return upDateUsuario;
+        
+}
+const deleteLogicController = async({id, deleteLogic})=>{
+
+    try {
+        const users = await user.update({
+            deleteLogic
+        },
+        {
+            where:{
+                id:id
+            }
+        })
+        return users
+    } catch (error) {
+        throw Error(error)
+    }     
+    
+}
+
+module.exports = { ShoppinghistoryUser,putUserController, getUserIdController, deleteLogicController };

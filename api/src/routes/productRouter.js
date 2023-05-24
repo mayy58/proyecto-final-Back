@@ -13,14 +13,15 @@ const {
   upDateProductHandler,
 } = require("../handlers/productsHandler");
 
-const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
-
-
 const productRouter = Router();
 
 
+const getOrderNameProductPriceAlf = require("../handlers/getOrderNameProductPriceAlf");
+
+
+
 productRouter.get("/", getProduct);
-productRouter.put("/:id", upDateProductHandler);
+productRouter.put("/:id",  upDateProductHandler)
 productRouter.get("/:id", getProductByID);
 productRouter.get("/popular", getPopularProduct);
 productRouter.get("/user/:nameuser", getProductsUser);
