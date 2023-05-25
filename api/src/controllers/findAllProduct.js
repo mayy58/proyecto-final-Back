@@ -7,7 +7,6 @@ const findAllProduct = async () => {
     where: {
       deleteLogic: true,
     },
-    order: "id", 
     attributes: ["id","name"]});
   return products;
 }

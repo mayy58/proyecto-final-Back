@@ -15,7 +15,7 @@ const getProduct = async (req, res) => {
         size = sizeAsNumbre;
     
     //****** */
-    let prod={};
+    let prod;
     try {
         const {name} = req.query;
         name ?
