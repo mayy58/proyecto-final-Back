@@ -6,45 +6,9 @@ mercadopago.configure({
   access_token: process.env.ACCESS_TOKEN,
 });
 
-const popularProductByCategory = async (limit) => {
-  try {
-    // Obtener las categorías más populares ordenadas por popularidad de forma descendente
-    const popularCategories = await Category.findAll({
-      order: [["popularity", "DESC"]],
-      limit: limit, // Limitar la cantidad de categorías populares a obtener
-    });
+//! Este controller busca y retorna todos los productos ACTIVOS de un usuario
 
-    const popularProducts = [];
-
-    // Iterar sobre las categorías populares
-    for (const category of popularCategories) {
-      // Obtener los productos asociados a la categoría actual
-      const products = await product.findAll({
-        include: {
-          model: Category,
-          where: {
-            categoryId: category.id,
-          },
-        },
-      });
-
-      // Agregar los productos al array de productos populares
-      popularProducts.push(...products);
-    }
-
-    return popularProducts;
-  } catch (error) {
-    console.error(
-      `Error al obtener los productos de las categorías más populares: ${error}`
-    );
-    // Manejo del error
-    return [];
-  }
-};
-
-//! Este controller busca y retorna todos los productos de un usuario
-//! y debuelve dividido en activo e inactivos
-const findProductUser = async (useremail) => {
+const findProductActiveUser = async (useremail) => {
   let prod_active = []
   try {
     prod_active = await product.findAll({
@@ -62,7 +26,12 @@ const findProductUser = async (useremail) => {
   } catch (error) {
     console.log("Error al buscar los productos activos");
   }
-    
+
+  return prod_active;
+}
+
+//! Este controller busca y retorna todos los productos INACTIVOS de un usuario
+const findProductInactiveUser = async (useremail) => {
   let prod_inactive = [];
   try {
     prod_inactive = await product.findAll({
@@ -81,26 +50,9 @@ const findProductUser = async (useremail) => {
     console.log("Error al buscar los productos inactivos");
   }
 
-
-  return [prod_active, prod_inactive];
+  return  prod_inactive;
 }
 
-//ordena los productos
-const getOrderProduct = async(orders)=>{ // tendria que recivir el orden y el nombre del producto o categiria
-      const products = await product?.findAll()
-      let ordersProd=[]
-      if( orders === "asc" ){
-        ordersProd = products.sort((a,b)=> a.price - b.price)
-      }else if(orders === "desc"){
-        ordersProd = products.sort((a,b)=> b.price - a.price)
-      }else if(orders === "ascName"){
-        ordersProd = products.sort((a,b)=> a.name - b.name)
-      }else{
-        ordersProd = products.sort((a,b)=> b.name - a.name)
-      }
-
-      return ordersProd;
-}
 
 //!Este controller busca los productos por rango de Precios segun una categoria
 const findProdCatPrice = async (namecategory, max, min, page, size) => {
@@ -220,7 +172,73 @@ const findReviewProduct = (id) => {
 
 }
 
+// Update Productos
+const updateProductController = async ({
+  id,
+  name,
+  img,
+  stock,
+  description,
+  price,
+  isOnSale,
+  salePrice,
+  status,
+  deleteLogic,
+  categories,
+  email,
+  
+}) => {
 
+  const idProducto = parseInt(id) 
+  const iduser = await user.findOne({where: {email: email}});
+  if(!iduser) throw new Error('El usuario no esta registrado');
+  const userId  = iduser.id;
+  const idCategory = await Category.findOne({ where: { name: categories } });
+  const productInstance = await product.findByPk(idProducto);//Esto permite obtener el id del producto despues de eso obtenemos a que categoria esta relacionado este producto
+  if (!idCategory) throw new Error('Categoría incorrecta');
+  const updateprod = await product.update(
+    {
+      img,
+      name,
+      stock,
+      description,
+      price,
+      isOnSale,
+      salePrice,
+      status,
+      deleteLogic,
+      userId
+    },
+    {
+      where: {
+        id: idProducto
+      }
+    }
+  );
+  
+  await productInstance.addCategories(idCategory);// Aqui agregamos a esta instancia el idCategoria 
+  //a la tabla categoría de acuerdo al id del producto cuando la relaciones es de muchos a muchas
+  
+  return updateprod;
+};
+
+
+//************************************** */
+//ordena los productos
+const getOrderProduct = async(orders)=>{ // tendria que recivir el orden y el nombre del producto o categiria
+  const products = await product?.findAll()
+  let ordersProd=[]
+  if( orders === "asc" ){
+    ordersProd = products.sort((a,b)=> a.price - b.price)
+  }else if(orders === "desc"){
+    ordersProd = products.sort((a,b)=> b.price - a.price)
+  }else if(orders === "ascName"){
+    ordersProd = products.sort((a,b)=> a.name - b.name)
+  }else{
+    ordersProd = products.sort((a,b)=> b.name - a.name)
+  }
+  return ordersProd;
+}
 
 const postPagoMercadoPago = async(products)=>{
   let preference = {
@@ -252,73 +270,47 @@ const postPagoMercadoPago = async(products)=>{
   return dato;
 }
 
-const updateProductController = async ({
-  id,
-  name,
-  img,
-  stock,
-  description,
-  price,
-  isOnSale,
-  salePrice,
-  status,
-  deleteLogic,
-  categories,
-  email,
-  
-}) => {
-  console.log({
-    id,
-    name,
-    img,
-    stock,
-    description,
-    price,
-    isOnSale,
-    salePrice,
-    status,
-    deleteLogic,
-    categories,
-    email
-  })
+const popularProductByCategory = async (limit) => {
+  try {
+    // Obtener las categorías más populares ordenadas por popularidad de forma descendente
+    const popularCategories = await Category.findAll({
+      order: [["popularity", "DESC"]],
+      limit: limit, // Limitar la cantidad de categorías populares a obtener
+    });
 
-  const idProducto = parseInt(id) 
-  const iduser = await user.findOne({where: {email: email}});
-  if(!iduser) throw new Error('El usuario no esta registrado');
-  const userId  = iduser.id;
-  const idCategory = await Category.findOne({ where: { name: categories } });
-  const productInstance = await product.findByPk(idProducto);//Esto permite obtener el id del producto despues de eso obtenemos a que categoria esta relacionado este producto
-  if (!idCategory) throw new Error('Categoría incorrecta');
-  const updateprod = await product.update(
-    {
-      img,
-      name,
-      stock,
-      description,
-      price,
-      isOnSale,
-      salePrice,
-      status,
-      deleteLogic,
-      userId
-    },
-    {
-      where: {
-        id: idProducto
-      }
+    const popularProducts = [];
+
+    // Iterar sobre las categorías populares
+    for (const category of popularCategories) {
+      // Obtener los productos asociados a la categoría actual
+      const products = await product.findAll({
+        include: {
+          model: Category,
+          where: {
+            categoryId: category.id,
+          },
+        },
+      });
+
+      // Agregar los productos al array de productos populares
+      popularProducts.push(...products);
     }
-  );
-  console.log(idProducto)
-  
-  await productInstance.addCategories(idCategory);// Aqui agregamos a esta instancia el idCategoria 
-  //a la tabla categoría de acuerdo al id del producto cuando la relaciones es de muchos a muchas
-  
-  return updateprod;
+
+    return popularProducts;
+  } catch (error) {
+    console.error(
+      `Error al obtener los productos de las categorías más populares: ${error}`
+    );
+    // Manejo del error
+    return [];
+  }
 };
+
 
 module.exports = { 
   popularProductByCategory, 
-  findProductUser, 
+  findProductInactiveUser, 
+  findProductActiveUser,
   getOrderProduct, 
   findProdCatPrice, 
   createProduct, 
