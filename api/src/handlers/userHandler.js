@@ -4,7 +4,7 @@ const { ShoppinghistoryUser, putUserController,getUserIdController, deleteLogicC
 //! Handler que busca el historial de compra de un usuario
 const getShoppinghistory = async (req, res) =>{
     try {
-        const { email } = req.body;
+        const { email } = req.query;
         const shophistory = await ShoppinghistoryUser(email);
         res.status(200).json(shophistory);
     } catch (error) {
@@ -17,7 +17,7 @@ const getShoppinghistory = async (req, res) =>{
 //! Handler que busca el historial de venta de un usuario
 const getSalesghistory = async (req, res) =>{
     try {
-        const { email } = req.body;
+        const { email } = req.query;
         const seleshistory = await Saleshistoryuser(email);
         res.status(200).json(seleshistory);
     } catch (error) {
