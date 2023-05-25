@@ -89,8 +89,14 @@ const findNameProdPrice = async (nameproduct, max, min, page, size) => {
       price: { [Op.between]: [min, max],  },
       name:{ [Op.iLike]: `%${nameproduct}%` },
       deleteLogic: true, 
-      stock: { [Op.gt]: 0,}
+      stock: { [Op.gt]: 0,},
     },
+    include: {
+      model: Category,
+      attributes: ["id", "name"],
+      through: { attributes: [], }
+    },
+
     limit: size,
     offset: page * size
    });

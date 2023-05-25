@@ -20,7 +20,7 @@ const ShoppinghistoryUser = async (email)=>{
                 attributes: ["quantity", "purchaseprice"],
                 include: {
                     model: product,
-                    attributes: [ "name", "img" ],
+                    attributes: [ "id", "name", "img" ],
                 }
             }
         });
