@@ -32,7 +32,7 @@ loginRouter.post("/login", async (req, res) => {
         }
       );
       return res.status(200).json({
-        mail: User.mail,
+        email: User.email,
         nickname: User.nickname,
         address: User.address,
         token,
