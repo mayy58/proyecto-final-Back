@@ -1,11 +1,13 @@
 const { Router } = require("express");
-const { getShoppinghistory } = require("../handlers/userHandler")
+
+const { getShoppinghistory,putUserHandler,getIdUserHandler,deleteLogicHandler, getSalesghistory } = require("../handlers/userHandler")
 
 const userRouter = Router();
 
 userRouter.get("/shoppinghistory", getShoppinghistory);
-//userRouter.get("/", getUser);
-
-//userRouter.post("/update", updateOrder);
+userRouter.get("/saleshistory", getSalesghistory);
+userRouter.put("/update/:id", putUserHandler)
+userRouter.get("/:id", getIdUserHandler)
+userRouter.put("/delete/logic/:id", deleteLogicHandler)
 
 module.exports = userRouter;

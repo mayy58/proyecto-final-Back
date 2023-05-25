@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3001/auth/google/redirect",
+      callbackURL: "https://proyecto-final-back-production-dfbd.up.railway.app/auth/google/redirect",
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
@@ -26,7 +26,10 @@ passport.use(
             nickname:
               profile.displayName || profile.emails[0].value.split("@")[0],
             name: profile.name.givenName,
-            lastName: profile.name.familyName,
+            lastName: profile.name.familyName
+              ? profile.name.familyName
+              : profile.name.givenName,
+            picture: profile.photos[0].value || null,
           });
           console.log(`Usuario creado exitosamente ` + newuser);
           done(null, newuser);
