@@ -28,6 +28,7 @@ const  getOrderNameCategoryControllers =async({namecategory, page, size, orders}
     },
     include: {
       model: Category,
+      attributes: ["name"],
       where: {
         id: idCategory
       },
