@@ -46,8 +46,17 @@ loginRouter.post("/login", async (req, res) => {
 });
 
 loginRouter.post("/create", async (req, res) => {
-  const { email, password, name, lastName, birthDate, address, nickname } =
-    req.body;
+  const {
+    picture,
+    email,
+    password,
+    name,
+    lastName,
+    birthDate,
+    address,
+    nickname,
+    roll,
+  } = req.body;
   try {
     const existEmail = await user.findOne({ where: { email: email } });
 
@@ -73,6 +82,8 @@ loginRouter.post("/create", async (req, res) => {
       birthDate: birthDate,
       address: address,
       nickname: nickname,
+      picture: picture,
+      roll: roll,
     });
 
     const token = jwt.sign(
@@ -92,6 +103,7 @@ loginRouter.post("/create", async (req, res) => {
       nickname: usernew.nickname,
       email: usernew.email,
       address: usernew.address,
+      picture: usernew.picture,
       token,
       exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     });
