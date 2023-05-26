@@ -8,7 +8,7 @@ const {
   postCreateAdmin,
   getAllUser,
   logicDelete,
-  getCategory,
+  percentegeGoogle,
 } = require("../handlers/adminHandlers");
 
 const adminRouter = Router();
@@ -16,6 +16,7 @@ const adminRouter = Router();
 adminRouter.post("/createadmin", [verifyToken, isSuperAdmin], postCreateAdmin);
 adminRouter.get("/listusers", [verifyToken, isAdmin], getAllUser);
 adminRouter.delete("/listusers", [verifyToken, isAdmin], logicDelete);
-adminRouter.get("/piechart", getCategory);
+//adminRouter.get("/piechart", getCategory);
+adminRouter.get("/percentage", percentegeGoogle);
 
 module.exports = adminRouter;

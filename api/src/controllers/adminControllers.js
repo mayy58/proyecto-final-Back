@@ -1,58 +1,54 @@
 const { user, order, Category } = require("../db");
+const { Op } = require("sequelize");
 
-const createAdmin = async (req, res) => {
-  const { email, password, name, lastName, birthDate, address, nickname } =
-    req.body;
+const createAdmin = async (
+  picture,
+  email,
+  password,
+  name,
+  lastName,
+  birthDate,
+  address,
+  nickname
+) => {
   try {
     const existingAdmin = await user.findOne({
       where: {
         email: email,
-        roll: "ADMIN",
+        nickname: nickname,
       },
     });
     if (existingAdmin) {
-      return res.status(409).json({
-        message: "Ya existe un admin con el mismo correo electrónico.",
-      });
-    } else {
-      const newAdmin = await user.create({
-        email: email,
-        password: password,
-        name: name,
-        lastName: lastName,
-        birthDate: birthDate,
-        address: address,
-        nickname: nickname,
-        roll: "ADMIN",
-      });
-      return res
-        .status(200)
-        .json({ message: `Administrador ${newAdmin.name} creado con éxito` });
+      throw new Error("Existe un admin con el mismo correo electrónico.");
     }
+
+    const newAdmin = await user.create({
+      email: email,
+      password: password,
+      name: name,
+      lastName: lastName,
+      birthDate: birthDate,
+      address: address,
+      nickname: nickname,
+      picture: picture,
+      roll: "ADMIN",
+    });
+
+    return { message: `Administrador ${newAdmin.name} creado con éxito` };
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error(error.message);
+    throw error;
   }
 };
 
 const allUser = async (req, res) => {
   try {
-    const { status } = req.query;
-
-    let whereClause = {};
-
-    if (status === "active") {
-      whereClause.deleteLogic = true;
-    } else if (status === "inactive") {
-      whereClause.deleteLogic = false;
-    }
-
-    const allUsers = await user.findAll({
-      where: whereClause,
-      attributes: ["id", "nickname", "email", "deleteLogic", "roll"],
+    const users = await user.findAll({
+      attributes: ["id", "name", "email", "roll", "deleteLogic"],
     });
-    return res.status(200).json(allUsers);
+    res.status(200).json(users);
   } catch (error) {
-    throw new Error("Error en el servidor");
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -68,29 +64,33 @@ const deleteSelectedUsers = async (ids) => {
     }
     return { message: "Usuarios eliminados exitosamente" };
   } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const registerPercentege = async (req, res) => {
+  try {
+    const totalUsers = await user.count();
+    console.log(totalUsers);
+    const googleUsers = await user.count({
+      where: { googleId: { [Op.not]: null } },
+    });
+    console.log(googleUsers);
+    const directUsers = totalUsers - googleUsers;
+
+    const googlePercentage = (googleUsers / totalUsers) * 100;
+    const directPercentage = (directUsers / totalUsers) * 100;
+    console.log(googlePercentage);
+    console.log(directPercentage);
+    return res.status(200).json({ googlePercentage, directPercentage });
+  } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
-const getMoreSell = async (req, res) => {
-  try {
-    const result = await order.findAll({
-      attributes: [[sequelize.literal("COUNT(*)"), "totalSold"], "categoryId"],
-      include: {
-        model: Category,
-        attributes: ["name"],
-      },
-      group: ["categoryId"],
-      raw: true,
-    });
-
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "Hubo un error al obtener los productos vendidos por categoría",
-    });
-  }
+module.exports = {
+  createAdmin,
+  allUser,
+  deleteSelectedUsers,
+  registerPercentege,
 };
-
-module.exports = { createAdmin, allUser, deleteSelectedUsers, getMoreSell };
