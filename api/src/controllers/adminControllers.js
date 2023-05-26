@@ -1,4 +1,4 @@
-const { user } = require("../db");
+const { user, order, Category } = require("../db");
 
 const createAdmin = async (req, res) => {
   const { email, password, name, lastName, birthDate, address, nickname } =
@@ -48,7 +48,7 @@ const allUser = async (req, res) => {
 
     const allUsers = await user.findAll({
       where: whereClause,
-      attributes: ["id", "nickname", "email", "deleteLogic"],
+      attributes: ["id", "nickname", "email", "deleteLogic", "roll"],
     });
     return res.status(200).json(allUsers);
   } catch (error) {
@@ -72,4 +72,25 @@ const deleteSelectedUsers = async (ids) => {
   }
 };
 
-module.exports = { createAdmin, allUser, deleteSelectedUsers };
+const getMoreSell = async (req, res) => {
+  try {
+    const result = await order.findAll({
+      attributes: [[sequelize.literal("COUNT(*)"), "totalSold"], "categoryId"],
+      include: {
+        model: Category,
+        attributes: ["name"],
+      },
+      group: ["categoryId"],
+      raw: true,
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Hubo un error al obtener los productos vendidos por categoría",
+    });
+  }
+};
+
+module.exports = { createAdmin, allUser, deleteSelectedUsers, getMoreSell };

@@ -2,6 +2,7 @@ const {
   createAdmin,
   allUser,
   deleteSelectedUsers,
+  getMoreSell,
 } = require("../controllers/adminControllers");
 
 const postCreateAdmin = async (req, res) => {
@@ -42,4 +43,13 @@ const logicDelete = async (req, res) => {
   }
 };
 
-module.exports = { postCreateAdmin, getAllUser, logicDelete };
+const getCategory = async (req, res) => {
+  try {
+    const result = await getMoreSell();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { postCreateAdmin, getAllUser, logicDelete, getCategory };
