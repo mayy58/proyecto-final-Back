@@ -21,7 +21,7 @@ const getProduct = async (req, res) => {
         name ?
             prod = await getByNameProduct(name, page, size)
         :
-            prod = await findAllProduct(page, size) 
+            prod = await findAllProduct() 
 
         res.status(200).json(prod);
     } catch (error) {

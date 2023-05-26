@@ -1,4 +1,4 @@
-const { product, Category, user } = require("../db");
+const { product, Category, user, review } = require("../db");
 const { Op } = require("sequelize");
 const mercadopago = require("mercadopago");
 require("dotenv").config();
@@ -6,78 +6,53 @@ mercadopago.configure({
   access_token: process.env.ACCESS_TOKEN,
 });
 
-const popularProductByCategory = async (limit) => {
+//! Este controller busca y retorna todos los productos ACTIVOS de un usuario
+
+const findProductActiveUser = async (useremail) => {
+  let prod_active = []
   try {
-    // Obtener las categorías más populares ordenadas por popularidad de forma descendente
-    const popularCategories = await Category.findAll({
-      order: [["popularity", "DESC"]],
-      limit: limit, // Limitar la cantidad de categorías populares a obtener
-    });
-
-    const popularProducts = [];
-
-    // Iterar sobre las categorías populares
-    for (const category of popularCategories) {
-      // Obtener los productos asociados a la categoría actual
-      const products = await product.findAll({
+    prod_active = await product.findAll({
+      where: { 
+        deleteLogic: true, 
+        stock: {[Op.gt]: 0,}},
         include: {
-          model: Category,
-          where: {
-            categoryId: category.id,
+            model: user,
+            attributes: [ "name"],
+            where: {
+              email: useremail
           },
-        },
-      });
-
-      // Agregar los productos al array de productos populares
-      popularProducts.push(...products);
-    }
-
-    return popularProducts;
+        }}
+  );
   } catch (error) {
-    console.error(
-      `Error al obtener los productos de las categorías más populares: ${error}`
-    );
-    // Manejo del error
-    return [];
+    console.log("Error al buscar los productos activos");
   }
-};
 
-//! Este controller busca y retorna todos los productos de un usuario
-const findProductUser = async (nameuser) => {
-
-  let prod_user = await product.findAll({
-    where: { 
-      deleteLogic: true, 
-      stock: {[Op.gt]: 0,}},
-      include: {
-          model: user,
-          attributes: [ "name"],
-          where: {
-            name: {
-              [Op.iLike]: `%${nameuser}%`,
-            }
-        },
-      }}
-);
-return prod_user;
+  return prod_active;
 }
 
-//ordena los productos
-const getOrderProduct = async(orders)=>{ // tendria que recivir el orden y el nombre del producto o categiria
-      const products = await product?.findAll()
-      let ordersProd=[]
-      if( orders === "asc" ){
-        ordersProd = products.sort((a,b)=> a.price - b.price)
-      }else if(orders === "desc"){
-        ordersProd = products.sort((a,b)=> b.price - a.price)
-      }else if(orders === "ascName"){
-        ordersProd = products.sort((a,b)=> a.name - b.name)
-      }else{
-        ordersProd = products.sort((a,b)=> b.name - a.name)
-      }
+//! Este controller busca y retorna todos los productos INACTIVOS de un usuario
+const findProductInactiveUser = async (useremail) => {
+  let prod_inactive = [];
+  try {
+    prod_inactive = await product.findAll({
+      where: { 
+        deleteLogic: false, 
+      },
+        include: {
+            model: user,
+            attributes: [ "name"],
+            where: {
+              email: useremail
+          },
+        }}
+      );
+  } catch (error) {
+    console.log("Error al buscar los productos inactivos");
+  }
 
-      return ordersProd;
+  return  prod_inactive;
 }
+
 
 //!Este controller busca los productos por rango de Precios segun una categoria
 const findProdCatPrice = async (namecategory, max, min, page, size) => {
@@ -114,8 +89,14 @@ const findNameProdPrice = async (nameproduct, max, min, page, size) => {
       price: { [Op.between]: [min, max],  },
       name:{ [Op.iLike]: `%${nameproduct}%` },
       deleteLogic: true, 
-      stock: { [Op.gt]: 0,}
+      stock: { [Op.gt]: 0,},
     },
+    include: {
+      model: Category,
+      attributes: ["id", "name"],
+      through: { attributes: [], }
+    },
+
     limit: size,
     offset: page * size
    });
@@ -132,7 +113,6 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   } catch (error) {
     throw new Error('El usuario no esta registrado', error);
   }
-  
   const userId  = iduser.id;
   // le cambio el rol al usuario a vendedor
   try {
@@ -172,6 +152,100 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
   return newprod;
 }
 
+  //! Controller para cargar review de producto
+
+  const createReviewProduct = async (id, punctuationproduct, coment) => {
+    try {
+      const newReview = await review.create({punctuationproduct, coment, productId: id})
+    } catch (error) {
+      console.log("Error en la creacion del review");
+      throw Error("Error en la creacion del review");
+    }
+    return "Review cargado exitosamente"
+  }
+
+//! Controller para buscar un review
+
+const findReviewProduct = (id) => {
+  try {
+    const review = review.findAll({where: {productId: id}})
+  } catch (error) {
+    console.log("Error en la buscar el review");
+    throw Error("Error en la buscar el review");
+  }
+
+  return review;
+
+}
+
+// Update Productos
+const updateProductController = async ({
+  id,
+  name,
+  img,
+  stock,
+  description,
+  price,
+  isOnSale,
+  salePrice,
+  status,
+  deleteLogic,
+  categories,
+  email,
+  
+}) => {
+
+  const idProducto = parseInt(id) 
+  const iduser = await user.findOne({where: {email: email}});
+  if(!iduser) throw new Error('El usuario no esta registrado');
+  const userId  = iduser.id;
+  const idCategory = await Category.findOne({ where: { name: categories } });
+  const productInstance = await product.findByPk(idProducto);//Esto permite obtener el id del producto despues de eso obtenemos a que categoria esta relacionado este producto
+  if (!idCategory) throw new Error('Categoría incorrecta');
+  const updateprod = await product.update(
+    {
+      img,
+      name,
+      stock,
+      description,
+      price,
+      isOnSale,
+      salePrice,
+      status,
+      deleteLogic,
+      userId
+    },
+    {
+      where: {
+        id: idProducto
+      }
+    }
+  );
+  
+  await productInstance.addCategories(idCategory);// Aqui agregamos a esta instancia el idCategoria 
+  //a la tabla categoría de acuerdo al id del producto cuando la relaciones es de muchos a muchas
+  
+  return updateprod;
+};
+
+
+//************************************** */
+//ordena los productos
+const getOrderProduct = async(orders)=>{ // tendria que recivir el orden y el nombre del producto o categiria
+  const products = await product?.findAll()
+  let ordersProd=[]
+  if( orders === "asc" ){
+    ordersProd = products.sort((a,b)=> a.price - b.price)
+  }else if(orders === "desc"){
+    ordersProd = products.sort((a,b)=> b.price - a.price)
+  }else if(orders === "ascName"){
+    ordersProd = products.sort((a,b)=> a.name - b.name)
+  }else{
+    ordersProd = products.sort((a,b)=> b.name - a.name)
+  }
+  return ordersProd;
+}
+
 const postPagoMercadoPago = async(products)=>{
   let preference = {
     items:[],
@@ -202,70 +276,55 @@ const postPagoMercadoPago = async(products)=>{
   return dato;
 }
 
-const updateProductController = async ({
-  id,
-  name,
-  img,
-  stock,
-  description,
-  price,
-  isOnSale,
-  salePrice,
-  status,
-  deleteLogic,
-  categories,
-  email,
-  
-}) => {
-  console.log({
-    id,
-    name,
-    img,
-    stock,
-    description,
-    price,
-    isOnSale,
-    salePrice,
-    status,
-    deleteLogic,
-    categories,
-    email
-  })
+const popularProductByCategory = async (limit) => {
+  try {
+    // Obtener las categorías más populares ordenadas por popularidad de forma descendente
+    const popularCategories = await Category.findAll({
+      order: [["popularity", "DESC"]],
+      limit: limit, // Limitar la cantidad de categorías populares a obtener
+    });
 
-  const idProducto = parseInt(id) 
-  const iduser = await user.findOne({where: {email: email}});
-  if(!iduser) throw new Error('El usuario no esta registrado');
-  const userId  = iduser.id;
-  const idCategory = await Category.findOne({ where: { name: categories } });
-  const productInstance = await product.findByPk(idProducto);//Esto permite obtener el id del producto despues de eso obtenemos a que categoria esta relacionado este producto
-  if (!idCategory) throw new Error('Categoría incorrecta');
-  const updateprod = await product.update(
-    {
-      img,
-      name,
-      stock,
-      description,
-      price,
-      isOnSale,
-      salePrice,
-      status,
-      deleteLogic,
-      userId
-    },
-    {
-      where: {
-        id: idProducto
-      }
+    const popularProducts = [];
+
+    // Iterar sobre las categorías populares
+    for (const category of popularCategories) {
+      // Obtener los productos asociados a la categoría actual
+      const products = await product.findAll({
+        include: {
+          model: Category,
+          where: {
+            categoryId: category.id,
+          },
+        },
+      });
+
+      // Agregar los productos al array de productos populares
+      popularProducts.push(...products);
     }
-  );
-  console.log(idProducto)
-  
-  await productInstance.addCategories(idCategory);// Aqui agregamos a esta instancia el idCategoria 
-  //a la tabla categoría de acuerdo al id del producto cuando la relaciones es de muchos a muchas
-  
-  return updateprod;
+
+    return popularProducts;
+  } catch (error) {
+    console.error(
+      `Error al obtener los productos de las categorías más populares: ${error}`
+    );
+    // Manejo del error
+    return [];
+  }
 };
 
-module.exports = { popularProductByCategory, findProductUser, getOrderProduct, findProdCatPrice, createProduct, findNameProdPrice, postPagoMercadoPago, updateProductController };
+
+module.exports = { 
+  popularProductByCategory, 
+  findProductInactiveUser, 
+  findProductActiveUser,
+  getOrderProduct, 
+  findProdCatPrice, 
+  createProduct, 
+  findNameProdPrice, 
+  postPagoMercadoPago, 
+  updateProductController,
+  createReviewProduct,
+  findReviewProduct
+ };
 
 

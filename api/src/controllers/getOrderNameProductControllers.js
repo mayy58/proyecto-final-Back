@@ -28,6 +28,13 @@ const getOrderNameProductControllers = async({ nameproduct,size, page, orders })
         deleteLogic: true, 
         stock: { [Op.gt]: 0,}
       },
+      include: {
+        model: Category,
+        attributes: ["name"],
+        through: {
+            attributes: [],
+        },
+    },
       order: [[`${name}`, `${orders}`]],
       attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic" ],
       limit: size,

@@ -32,6 +32,9 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      sellerId: {
+        type: DataTypes.INTEGER,
+      },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,

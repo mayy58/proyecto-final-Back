@@ -1,16 +1,33 @@
-const { ShoppinghistoryUser, putUserController,getUserIdController, deleteLogicController} = require("../controllers/userControllers")
 
+const { ShoppinghistoryUser, putUserController,getUserIdController, deleteLogicController, Saleshistoryuser} = require("../controllers/userControllers")
 
-// const getUser = async (req, res) =>{
-//     try {
-//         //const { } = req.body;
-//         const users = await findUser();
-//         res.status(200).json(users);
-//     } catch (error) {
-//         res.status(404).json({ error: error.message });
-//     }
+//! Handler que busca el historial de compra de un usuario
+const getShoppinghistory = async (req, res) =>{
+    try {
+        const { email } = req.query;
+        const shophistory = await ShoppinghistoryUser(email);
+        res.status(200).json(shophistory);
+    } catch (error) {
+        console.log("ERROR");
+        res.status(404).json({ error: error.message });
+    }
 
-// }
+}
+
+//! Handler que busca el historial de venta de un usuario
+const getSalesghistory = async (req, res) =>{
+    try {
+        const { email } = req.query;
+        const seleshistory = await Saleshistoryuser(email);
+        res.status(200).json(seleshistory);
+    } catch (error) {
+        console.log("ERROR");
+        res.status(404).json({ error: error.message });
+    }
+
+}
+
+// nelson
 const getIdUserHandler= async(req, res)=>{
     const { id } = req.params;
     //console.log(id)
@@ -21,6 +38,7 @@ const getIdUserHandler= async(req, res)=>{
         res.status(401).json({error:error.message})
     }
 }
+
 //solo actualiza datos que no son sensibles
 const putUserHandler = async(req, res)=>{
     try {
@@ -33,17 +51,6 @@ const putUserHandler = async(req, res)=>{
     }
 }
 
-const getShoppinghistory = async (req, res) =>{
-    try {
-        const { email } = req.body;
-        const shophistory = await ShoppinghistoryUser(email);
-        res.status(200).json(shophistory);
-    } catch (error) {
-        console.log("ERROR");
-        res.status(404).json({ error: error.message });
-    }
-
-}
 //solo realiza el borrado logico de la cuenta del usuario
 const deleteLogicHandler = async(req, res)=>{
     try {
@@ -57,5 +64,10 @@ const deleteLogicHandler = async(req, res)=>{
 }
 
 module.exports = {
-    getShoppinghistory,putUserHandler,getIdUserHandler,deleteLogicHandler
+    getShoppinghistory,
+    getSalesghistory,
+    putUserHandler,
+    getIdUserHandler,
+    deleteLogicHandler
+
   };
