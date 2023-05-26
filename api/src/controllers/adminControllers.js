@@ -1,4 +1,4 @@
-const { user, order, Category } = require("../db");
+const { user, order, Category, product } = require("../db");
 
 const createAdmin = async (req, res) => {
   const { email, password, name, lastName, birthDate, address, nickname } =
@@ -93,4 +93,39 @@ const getMoreSell = async (req, res) => {
   }
 };
 
-module.exports = { createAdmin, allUser, deleteSelectedUsers, getMoreSell };
+
+//! Controller que busca los datos para el grafico de torta "Cantidad de productos por Categoria"
+ const PieChart = async () => {
+  let cate=[]
+  try {
+      cate = await Category.findAll();
+  } catch (error) {
+      console.log("Error al traer categorias")
+  }
+  let prodxcat = [["CATEGORIA", "CANT. PRODUCTOS", { role: "style" }]];
+  // este de abajo para la libreria Chart.js, el de arriba para google chart
+  //let prodxcat = [];
+  for(const c of cate){
+    let prod=[]
+    try {
+      prod = await product.findAll({
+        include:{
+          model:Category,
+          where: {id: c.id}
+        }
+      })
+    } catch (error) {
+      console.log("Error al traer productos por categoria")
+    }
+    prodxcat.push([c.name, prod.length]);
+    // este de abajo para la libreria Chart.js, el de arriba para google chart
+    //prodxcat.push({ category: c.name, cantprod: prod.length});
+  }
+
+  return prodxcat;
+
+ };
+
+
+
+module.exports = { createAdmin, allUser, deleteSelectedUsers, getMoreSell, PieChart };
