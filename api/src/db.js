@@ -19,8 +19,8 @@ const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY } = process.env;
 //);
 
 const sequelize = new Sequelize(DB_DEPLOY, {
-  logging: false,
-  native: false,
+ logging: false,
+ native: false,
 });
 
 detailOrderModel(sequelize);
