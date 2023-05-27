@@ -72,7 +72,7 @@ const deleteSelectedUsers = async (ids) => {
   }
 };
 
-const registerPercentege = async (req, res) => {
+const registerPercentege = async () => {
   try {
     const totalUsers = await user.count();
     console.log(totalUsers);
@@ -86,9 +86,9 @@ const registerPercentege = async (req, res) => {
     const directPercentage = (directUsers / totalUsers) * 100;
     console.log(googlePercentage);
     console.log(directPercentage);
-    return res.status(200).json({ googlePercentage, directPercentage });
+    return { googlePercentage, directPercentage };
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    throw new Error(error.message);
   }
 };
 
