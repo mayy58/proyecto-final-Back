@@ -17,7 +17,7 @@ const getByNameProduct = async (name, page, size)=>{
                 attributes: [],
             },
         },
-        attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic" ],
+        attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic", "userId" ],
         limit: size,
         offset: page * size
     })

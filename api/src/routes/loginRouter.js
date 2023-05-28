@@ -91,17 +91,19 @@ loginRouter.post("/create", async (req, res) => {
     const msg = {
       to: `${usernew.email}`, // Change to your recipient
       from: `tukimarket.contacto@gmail.com`, // Change to your verified sender
-      subject: "Bienvenido a TukiMarket",
+
+      subject: 'Bienvenido a TukiMarket',
       text: `Hola! ${usernew.name} Bienvenido a TukiMarket!`,
       html: `<strong>Hola ${usernew.name} Gracias por registrarte en nuestra pagina</strong>`,
-    };
-
+    }
+    
     sgMail
       .send(msg)
-      .then((response) => {})
+      .then((response) => {
+      })
       .catch((error) => {
-        console.error(error);
-      });
+        console.error(error)
+      })
 
     const token = jwt.sign(
       {
