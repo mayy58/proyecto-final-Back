@@ -1,19 +1,11 @@
-const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductInactiveUser, findProductActiveUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController, createReviewProduct, findReviewProduct } = require("../controllers/productsControllers");
 
-const getPopularProduct = async () => {
-  try {
-    const result = await popularProductByCategory();
-    res.status(200).send(result);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-};
 
-//! Este Handler solicita los productos de un usuario a su controller
-const getProductsUser = async (req, res) => {
+//! Este Handler solicita los productos ACTIVOS de un usuario a su controller
+const getProductsActivosUser = async (req, res) => {
     try {
-        const { nameuser }  = req.params;
-        const prod = await findProductUser(nameuser);
+        const { useremail }  = req.params;
+        const prod = await findProductActiveUser(useremail);
         res.status(200).json(prod);
 
     } catch (error) {
@@ -21,16 +13,15 @@ const getProductsUser = async (req, res) => {
     }
  }
 
-
- const getOrderHanlderProducto = async (req, res) => {
+ //! Este Handler solicita los productos INACTIVOS de un usuario a su controller
+const getProductsInactivosUser = async (req, res) => {
   try {
-   
-      const { orders } = req.query
-      const order = await getOrderProduct(orders);
-      res.status(200).json(order);
+      const { useremail }  = req.params;
+      const prod = await findProductInactiveUser(useremail);
+      res.status(200).json(prod);
 
   } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
   }
 }
 
@@ -92,7 +83,6 @@ const getProductsUser = async (req, res) => {
    }
   
 
-
  //! Handlers para cargar productos setProduct
  const setProduct = async (req, res) => {
   try {
@@ -103,20 +93,29 @@ const getProductsUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-///hecho por nelson para despues controlar en el pull marge request
-//Para obtener los datos desde el front
-const postShoppingHandler = async(req, res)=>{
-  try {
-   const products =  req.body
- 
-    const newShoping = await postPagoMercadoPago(products)
 
-    res.status(200).json(newShoping)
- 
+//! Handlers para cargar review de producto
+const setReviewProduct = async (req, res) => {
+  try {
+    const { id, punctuationproduct, coment } = req.body;
+    const newReview = await createReviewProduct({ id, punctuationproduct, coment });
+    res.status(200).json(newReview);
   } catch (error) {
-    res.status(404).json({error:error.message})
+    res.status(400).json({ error: error.message });
   }
- }
+};
+//! Handlers para buscar review de producto
+const getReviewProduct = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const review = await findReviewProduct({ id });
+    res.status(200).json(review);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Update Productos
  const upDateProductHandler = async (req, res) =>{
 
   const { id } = req.params;
@@ -131,6 +130,56 @@ const postShoppingHandler = async(req, res)=>{
   }
 }
 
+//************************************ */
 
-module.exports = { getPopularProduct, getProductsUser, getOrderHanlderProducto, getPriceRangeName, setProduct, getPriceRangeCategory, postShoppingHandler, upDateProductHandler};
+///hecho por nelson para despues controlar en el pull marge request
+//Para obtener los datos desde el front
+const postShoppingHandler = async(req, res)=>{
+  try {
+   const products =  req.body
+ 
+    const newShoping = await postPagoMercadoPago(products)
+
+    res.status(200).json(newShoping)
+ 
+  } catch (error) {
+    res.status(404).json({error:error.message})
+  }
+ }
+
+const getOrderHanlderProducto = async (req, res) => {
+  try {
+   
+      const { orders } = req.query
+      const order = await getOrderProduct(orders);
+      res.status(200).json(order);
+
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+}
+
+const getPopularProduct = async () => {
+  try {
+    const result = await popularProductByCategory();
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
+
+module.exports = { 
+  getPopularProduct, 
+  getProductsActivosUser, 
+  getProductsInactivosUser,
+  getOrderHanlderProducto, 
+  getPriceRangeName, 
+  setProduct, 
+  getPriceRangeCategory, 
+  postShoppingHandler, 
+  upDateProductHandler,
+  setReviewProduct,
+  getReviewProduct
+};
 
