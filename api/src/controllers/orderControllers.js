@@ -95,10 +95,46 @@ const updateStateOrder = async (estado, orderid) => {
   
 }
 
+const getOrderDateController= async()=>{
+ 
+ const arr = await order.findAll(
+    {
+      where: { 
+        deleteLogic: true, 
+      },
+      order: [["orderDate","asc"]],
+      attributes:["orderDate", "totalAmount"]
+    }
+  );
+  const monthlyTotals = [];
+  //console.log(arr)
+  arr.forEach(item => {
+    let anio = item.orderDate.slice(0,4)
+    let mes =  item.orderDate.slice(5,7)
+     console.log(anio)
+    console.log(mes)
+   
+   // console.log(month)
+    const key = `${mes}/${anio}`;
+
+    const existingMonth = monthlyTotals.find(monthTotal => monthTotal[0] === key);
+
+    if (existingMonth) {
+      existingMonth[1] += parseFloat(item.totalAmount);
+    } else {
+      monthlyTotals.push([key, parseFloat(item.totalAmount)]);
+    }
+  });
+console.log(monthlyTotals);
+return monthlyTotals;
+//return arr;
+}
 
 
 module.exports = {
   createOrderYDetail,
   updateStateOrder,
+  getOrderDateController
+  //updateCloseOrder
 };
 
