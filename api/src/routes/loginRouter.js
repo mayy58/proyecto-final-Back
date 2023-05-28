@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.KEY_SENDGRID);
 
 require("dotenv").config();
 const { user } = require("../db");
@@ -32,7 +34,7 @@ loginRouter.post("/login", async (req, res) => {
         }
       );
       return res.status(200).json({
-        mail: User.mail,
+        email: User.email,
         nickname: User.nickname,
         address: User.address,
         email: User.email,
@@ -46,8 +48,17 @@ loginRouter.post("/login", async (req, res) => {
 });
 
 loginRouter.post("/create", async (req, res) => {
-  const { email, password, name, lastName, birthDate, address, nickname } =
-    req.body;
+  const {
+    picture,
+    email,
+    password,
+    name,
+    lastName,
+    birthDate,
+    address,
+    nickname,
+    roll,
+  } = req.body;
   try {
     const existEmail = await user.findOne({ where: { email: email } });
 
@@ -73,7 +84,25 @@ loginRouter.post("/create", async (req, res) => {
       birthDate: birthDate,
       address: address,
       nickname: nickname,
+      picture: picture,
+      roll: roll,
     });
+
+    const msg = {
+      to: `${usernew.email}`, // Change to your recipient
+      from: `tukimarket.contacto@gmail.com`, // Change to your verified sender
+      subject: 'Bienvenido a TukiMarket',
+      text: `Hola! ${usernew.name} Bienvenido a TukiMarket!`,
+      html: `<strong>Hola ${usernew.name} Gracias por registrarte en nuestra pagina</strong>`,
+    }
+    
+    sgMail
+      .send(msg)
+      .then((response) => {
+      })
+      .catch((error) => {
+        console.error(error)
+      })
 
     const token = jwt.sign(
       {
@@ -92,6 +121,7 @@ loginRouter.post("/create", async (req, res) => {
       nickname: usernew.nickname,
       email: usernew.email,
       address: usernew.address,
+      picture: usernew.picture,
       token,
       exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     });

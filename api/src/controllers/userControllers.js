@@ -20,7 +20,7 @@ const ShoppinghistoryUser = async (email)=>{
                 attributes: ["quantity", "purchaseprice"],
                 include: {
                     model: product,
-                    attributes: [ "name", "img" ],
+                    attributes: [ "id", "name", "img" ],
                 }
             }
         });
@@ -34,7 +34,6 @@ const ShoppinghistoryUser = async (email)=>{
 }
 
 //! Devuelve el historial de ventas de un usuario
-
 const Saleshistoryuser = async (email) =>{
 
     //* busco primero el id del usuario
@@ -53,7 +52,12 @@ const Saleshistoryuser = async (email) =>{
         or = await order.findAll({ 
             where: { sellerId: usid},
             include: {
-                model: detailOrder,       
+                model: detailOrder,
+                attributes: ["quantity", "purchaseprice"],
+                include: {
+                    model: product,
+                    attributes: [ "name", "img" ],
+                }
             }
         });
         console.log("Orden y Detalle encontrado con exito");
@@ -81,8 +85,7 @@ const getUserIdController= async(id)=>{
 }
 
 const putUserController = async({id, name, lastName, birthDate, address, picture}) =>{
-
-       
+     
         let upDateUsuario = await user.update(
             {
               name,

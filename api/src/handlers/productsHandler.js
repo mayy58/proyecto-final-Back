@@ -1,19 +1,11 @@
-const { popularProductByCategory, findProductUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController, createReviewProduct, findReviewProduct } = require("../controllers/productsControllers");
+const { popularProductByCategory, findProductInactiveUser, findProductActiveUser, getOrderProduct, findNameProdPrice, createProduct, findProdCatPrice, postPagoMercadoPago, updateProductController, createReviewProduct, findReviewProduct } = require("../controllers/productsControllers");
 
-const getPopularProduct = async () => {
-  try {
-    const result = await popularProductByCategory();
-    res.status(200).send(result);
-  } catch (error) {
-    res.status(404).json({ error: error.message });
-  }
-};
 
-//! Este Handler solicita los productos de un usuario a su controller
-const getProductsUser = async (req, res) => {
+//! Este Handler solicita los productos ACTIVOS de un usuario a su controller
+const getProductsActivosUser = async (req, res) => {
     try {
         const { useremail }  = req.params;
-        const prod = await findProductUser(useremail);
+        const prod = await findProductActiveUser(useremail);
         res.status(200).json(prod);
 
     } catch (error) {
@@ -21,16 +13,15 @@ const getProductsUser = async (req, res) => {
     }
  }
 
-
- const getOrderHanlderProducto = async (req, res) => {
+ //! Este Handler solicita los productos INACTIVOS de un usuario a su controller
+const getProductsInactivosUser = async (req, res) => {
   try {
-   
-      const { orders } = req.query
-      const order = await getOrderProduct(orders);
-      res.status(200).json(order);
+      const { useremail }  = req.params;
+      const prod = await findProductInactiveUser(useremail);
+      res.status(200).json(prod);
 
   } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
   }
 }
 
@@ -106,8 +97,8 @@ const getProductsUser = async (req, res) => {
 //! Handlers para cargar review de producto
 const setReviewProduct = async (req, res) => {
   try {
-    const { id, punctuationproduct, punctuationseller, coment } = req.body;
-    const newReview = await createReviewProduct({ id, punctuationproduct, punctuationseller, coment });
+    const { id, punctuationproduct, coment } = req.body;
+    const newReview = await createReviewProduct({ id, punctuationproduct, coment });
     res.status(200).json(newReview);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -124,6 +115,22 @@ const getReviewProduct = async (req, res) => {
   }
 };
 
+// Update Productos
+ const upDateProductHandler = async (req, res) =>{
+
+  const { id } = req.params;
+  const { name, img, stock, description, price, isOnSale, salePrice,
+      status, deleteLogic, categories,email  } = req.body;
+  try {
+      await updateProductController({id, name, img, stock, description, price, isOnSale, salePrice,
+          status, deleteLogic, categories,email});
+      res.status(200).send("El producto ha sido modificado con exito")
+  } catch (error) {
+      res.status(404).json({error: error.message})
+  }
+}
+
+//************************************ */
 
 ///hecho por nelson para despues controlar en el pull marge request
 //Para obtener los datos desde el front
@@ -139,24 +146,33 @@ const postShoppingHandler = async(req, res)=>{
     res.status(404).json({error:error.message})
   }
  }
- const upDateProductHandler = async (req, res) =>{
 
-  const { id } = req.params;
-  const { name, img, stock, description, price, isOnSale, salePrice,
-      status, deleteLogic, categories,email  } = req.body;
+const getOrderHanlderProducto = async (req, res) => {
   try {
-      await updateProductController({id, name, img, stock, description, price, isOnSale, salePrice,
-          status, deleteLogic, categories,email});
-      res.status(200).send("El producto ha sido modificado con exito")
+   
+      const { orders } = req.query
+      const order = await getOrderProduct(orders);
+      res.status(200).json(order);
+
   } catch (error) {
-      res.status(404).json({error: error.message})
+      res.status(400).json({ error: error.message });
   }
 }
+
+const getPopularProduct = async () => {
+  try {
+    const result = await popularProductByCategory();
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
 
 
 module.exports = { 
   getPopularProduct, 
-  getProductsUser, 
+  getProductsActivosUser, 
+  getProductsInactivosUser,
   getOrderHanlderProducto, 
   getPriceRangeName, 
   setProduct, 

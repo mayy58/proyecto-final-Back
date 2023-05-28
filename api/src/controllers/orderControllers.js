@@ -38,7 +38,7 @@ const createOrderYDetail = async (arrsyOrd)=>{
     let o = {};
     // obtengo id de usuario comprador
     try {
-      use = await user.findOne({where: {email: comprador}})
+      use = await user.findOne({where: {email: comprador.email}})
       use ? console.log('Usuario Comprador Encontrado') : console.log('Usuario Comprador NO Encontrado');
     } catch (error) {
       console.error('Usuario no registrado');
@@ -80,10 +80,10 @@ const createOrderYDetail = async (arrsyOrd)=>{
 const updateStateOrder = async (estado, orderid) => {
   try {
         
-    if(estado === 'ENTREGADO' || estado === 'RECHAZADO' || estado === 'CANCELADO')
-      await order.update({ deleteLogic: false, status: estado,}, {where: {id: orderid}});
-    
-    else await order.update({status: estado,}, {where: {id: orderid}});
+    if(estado === 'ENVIADO')
+          await order.update({status: estado,}, {where: {id: orderid}});
+    else 
+          await order.update({ deleteLogic: false, status: estado,}, {where: {id: orderid}});
     
     // La actualización se realizó exitosamente
     console.log('Actualización de orden exitosa');
@@ -137,5 +137,4 @@ module.exports = {
   getOrderDateController
   //updateCloseOrder
 };
-
 
