@@ -15,7 +15,9 @@ googleRouter.get("/google/redirect", async (req, res) => {
     const usergoogle = req.user;
 
     const userGoogle = await user.findOne({
-      where: { googleId: usergoogle.googleId},
+
+      where: { googleId: usergoogle.googleId },
+
     });
 
 
@@ -40,11 +42,13 @@ googleRouter.get("/google/redirect", async (req, res) => {
     //   token,
     //   exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     // });
+
     const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(token)}&tokenExpiration=${encodeURIComponent(tokenExpiration)}&email=${encodeURIComponent(userGoogle?.email)}&username=${encodeURIComponent(userGoogle?.nickname)}&roll=${encodeURIComponent(userGoogle?.roll)}`;
     res.redirect(redirectURL)
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error en el servidor", message: error.message });
+
   }
 });
 
