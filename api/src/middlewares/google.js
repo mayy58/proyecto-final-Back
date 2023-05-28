@@ -1,6 +1,8 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { user } = require("../db");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.KEY_SENDGRID);
 require("dotenv").config();
 
 passport.use(
@@ -9,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://proyecto-final-back-production-dfbd.up.railway.app/auth/google/redirect",
+      callbackURL: "http://localhost:3001/auth/google/redirect",
     },
     async function (accessToken, refreshToken, profile, done) {
       try {
@@ -31,6 +33,22 @@ passport.use(
               : profile.name.givenName,
             picture: profile.photos[0].value || null,
           });
+
+          const msg = {
+            to: `${newuser.email}`, // Change to your recipient
+            from: `tukimarket.contacto@gmail.com`, // Change to your verified sender
+            subject: "Bienvenido a TukiMarket",
+            text: `Hola! ${newuser.name} Bienvenido a TukiMarket!`,
+            html: `<strong>Hola ${newuser.name} Gracias por registrarte en nuestra pagina</strong>`,
+          };
+
+          sgMail
+            .send(msg)
+            .then((response) => {})
+            .catch((error) => {
+              console.error(error);
+            });
+
           console.log(`Usuario creado exitosamente ` + newuser);
           done(null, newuser);
         }
