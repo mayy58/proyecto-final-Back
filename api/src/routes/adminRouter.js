@@ -19,7 +19,7 @@ const adminRouter = Router();
 
 adminRouter.post("/createadmin", postCreateAdmin);
 adminRouter.get("/listusers", getAllUser);
-adminRouter.delete("/listusers", logicDelete);
+adminRouter.delete("/listusers/:action", logicDelete);
 adminRouter.get("/percentage", percentegeGoogle);
 adminRouter.get("/piechart", getPieChart);
 adminRouter.get("/sellers", getSellers);
