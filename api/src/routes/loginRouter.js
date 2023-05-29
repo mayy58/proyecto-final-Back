@@ -146,7 +146,7 @@ loginRouter.post("/forgot-password", async (req, res) => {
 
     await user.save();
 
-    const resetPasswordUrl = `http://localhost:3001/reset-password/${token}`;
+    const resetPasswordUrl = `http://localhost:3001/user/reset-password/${token}`;
 
     const message = {
       to: `${existUser.email}`,

@@ -1,9 +1,6 @@
+const { Op, Error } = require("sequelize");
 
-
-const { Op } = require("sequelize");
-
-const { user, order, Category, product } = require("../db");
-
+const { user, order, Category, product, detailOrder } = require("../db");
 
 const createAdmin = async (
   picture,
@@ -45,14 +42,14 @@ const createAdmin = async (
   }
 };
 
-const allUser = async (req, res) => {
+const allUser = async () => {
   try {
     const users = await user.findAll({
       attributes: ["id", "name", "email", "roll", "deleteLogic"],
     });
-    res.status(200).json(users);
+    return users;
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    throw new Error("Error al cargar los datos");
   }
 };
 
@@ -92,30 +89,28 @@ const registerPercentege = async () => {
   }
 };
 
-
-
 //! Controller que busca los datos para el grafico de torta "Cantidad de productos por Categoria"
- const PieChart = async () => {
-  let cate=[]
+const PieChart = async () => {
+  let cate = [];
   try {
-      cate = await Category.findAll();
+    cate = await Category.findAll();
   } catch (error) {
-      console.log("Error al traer categorias")
+    console.log("Error al traer categorias");
   }
   let prodxcat = [["CATEGORIA", "CANT. PRODUCTOS", { role: "style" }]];
   // este de abajo para la libreria Chart.js, el de arriba para google chart
   //let prodxcat = [];
-  for(const c of cate){
-    let prod=[]
+  for (const c of cate) {
+    let prod = [];
     try {
       prod = await product.findAll({
-        include:{
-          model:Category,
-          where: {id: c.id}
-        }
-      })
+        include: {
+          model: Category,
+          where: { id: c.id },
+        },
+      });
     } catch (error) {
-      console.log("Error al traer productos por categoria")
+      console.log("Error al traer productos por categoria");
     }
     prodxcat.push([c.name, prod.length]);
     // este de abajo para la libreria Chart.js, el de arriba para google chart
@@ -123,10 +118,35 @@ const registerPercentege = async () => {
   }
 
   return prodxcat;
+};
 
- };
+const deliveredProducts = async () => {
+  try {
+    const totalVendidos = await detailOrder.sum("quantity", {
+      include: [
+        {
+          model: order,
+          where: { status: "ENTREGADO" },
+          attributes: [],
+        },
+        {
+          model: product,
+          attributes: [],
+        },
+      ],
+    });
 
+    return totalVendidos;
+  } catch (error) {
+    throw Error("Error al obtener la cantidad de productos vendidos");
+  }
+};
 
-
-module.exports = { createAdmin, allUser, deleteSelectedUsers, PieChart,  registerPercentege, };
-
+module.exports = {
+  createAdmin,
+  allUser,
+  deleteSelectedUsers,
+  PieChart,
+  registerPercentege,
+  deliveredProducts,
+};
