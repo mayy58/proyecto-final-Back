@@ -1,10 +1,10 @@
 const {
   createAdmin,
   allUser,
-  deleteSelectedUsers,  PieChart,
-
+  deleteSelectedUsers, 
+  PieChart,
   registerPercentege,
-
+  findCountVentasXVendedor
 } = require("../controllers/adminControllers");
 
 const postCreateAdmin = async (req, res) => {
@@ -73,5 +73,14 @@ const getPieChart = async (req, res) => {
   }
 };
 
-module.exports = { postCreateAdmin, getAllUser, logicDelete, percentegeGoogle , getPieChart };
+const getSellers = async (req, res) => {
+  try {
+    const result = await findCountVentasXVendedor();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { postCreateAdmin, getAllUser, logicDelete, percentegeGoogle , getPieChart, getSellers };
 
