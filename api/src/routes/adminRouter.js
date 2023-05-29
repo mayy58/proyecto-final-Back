@@ -12,6 +12,7 @@ const {
   percentegeGoogle,
   getSellers,
   getPieChart,
+  getSales,
 } = require("../handlers/adminHandlers");
 
 const adminRouter = Router();
@@ -24,5 +25,7 @@ adminRouter.get("/percentage", percentegeGoogle);
 adminRouter.get("/piechart", getPieChart);
 adminRouter.get("/sellers", getSellers);
 adminRouter.get("/deliveredProducts", allProduct);
+adminRouter.get("/sales", getSales);
+
 
 module.exports = adminRouter;
