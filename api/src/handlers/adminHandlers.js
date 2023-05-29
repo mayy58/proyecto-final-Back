@@ -4,7 +4,7 @@ const {
   deleteSelectedUsers, 
   PieChart,
   registerPercentege,
-  findCountVentasXVendedor
+  findCountVentasXVendedor,
   deliveredProducts,
 } = require("../controllers/adminControllers");
 
