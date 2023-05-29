@@ -120,8 +120,6 @@ const PieChart = async () => {
 };
 
 
- };
-
  //! Busca la cantidad de productos en oferta para tejeta de admin
 const findCountSaleProduct = async () => {
   let sales = [];
