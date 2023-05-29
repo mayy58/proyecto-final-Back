@@ -6,6 +6,7 @@ const {
   registerPercentege,
   findCountVentasXVendedor,
   deliveredProducts,
+  findCountSaleProduct,
 } = require("../controllers/adminControllers");
 
 const postCreateAdmin = async (req, res) => {
@@ -77,6 +78,15 @@ const getPieChart = async (req, res) => {
 const getSellers = async (req, res) => {
   try {
     const result = await findCountVentasXVendedor();
+    return res.status(200).json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const getSales = async (req, res) => {
+  try {
+    const result = await findCountSaleProduct();
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ error: error.message });

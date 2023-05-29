@@ -248,4 +248,5 @@ module.exports = {
   registerPercentege,
   deliveredProducts,
   findCountVentasXVendedor,
+  findCountSaleProduct,
 };
