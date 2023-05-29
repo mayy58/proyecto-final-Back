@@ -43,7 +43,7 @@ const createAdmin = async (
       birthDate: birthDate,
       address: address,
       nickname: nickname,
-      picture: picture || "../utils/admin.jpg",
+      picture: picture,
       roll: "ADMIN",
     });
 
@@ -79,52 +79,56 @@ const allUser = async () => {
   }
 };
 
-const deleteSelectedUsers = async (ids) => {
-  try {
-    // Verificar si se proporcionaron IDs válidos
-    if (!Array.isArray(ids) || ids.length === 0) {
-      throw new Error("Debe seleccionar un usuario para eliminar");
-    }
-
-    for (const id of ids) {
-      await user.update({ deleteLogic: false }, { where: { id: id } });
-      await product.update({ deleteLogic: false }, { where: { userId: id } });
-    }
-    return { message: "Usuarios y productos dados de baja exitosamente" };
-  } catch (error) {
-    throw new Error(error.message);
-  }
-};
-
-//const deleteSelectedUsers = async (action,ids) => {
-//const { action } = req.params;
-//  const { ids } = req.body;
-//
+//const deleteSelectedUsers = async (ids) => {
 //  try {
 //    // Verificar si se proporcionaron IDs válidos
 //    if (!Array.isArray(ids) || ids.length === 0) {
-//      return res.status(400).json({ error: "Debe seleccionar al menos un usuario para realizar la acción" });
+//      throw new Error("Debe seleccionar un usuario para eliminar");
 //    }
 //
-//    if (action === "delete") {
-//      for (const id of ids) {
-//        await user.update({ deleteLogic: true }, { where: { id } });
-//        await product.update({ deleteLogic: true }, { where: { userId: id } });
-//      }
-//      return res.json({ message: "Usuarios y productos marcados como eliminados" });
-//    } else if (action === "restore") {
-//      for (const id of ids) {
-//        await user.update({ deleteLogic: false }, { where: { id } });
-//        await product.update({ deleteLogic: false }, { where: { userId: id } });
-//      }
-//      return res.json({ message: "Usuarios y productos restaurados exitosamente" });
-//    } else {
-//      return res.status(400).json({ error: "Acción no válida" });
+//    for (const id of ids) {
+//      await user.update({ deleteLogic: false }, { where: { id: id } });
+//      await product.update({ deleteLogic: false }, { where: { userId: id } });
 //    }
+//    return { message: "Usuarios y productos dados de baja exitosamente" };
 //  } catch (error) {
-//    return res.status(500).json({ error: error.message });
+//    throw new Error(error.message);
 //  }
-//}
+//};
+
+const deleteSelectedUsers = async (action, ids) => {
+  const { action } = req.params;
+  const { ids } = req.body;
+
+  try {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        error: "Debe seleccionar al menos un usuario para realizar la acción",
+      });
+    }
+    if (action === "delete") {
+      for (const id of ids) {
+        await user.update({ deleteLogic: false }, { where: { id } });
+        await product.update({ deleteLogic: false }, { where: { userId: id } });
+      }
+      return res.json({
+        message: "Usuarios y productos marcados como eliminados",
+      });
+    } else if (action === "restore") {
+      for (const id of ids) {
+        await user.update({ deleteLogic: true }, { where: { id } });
+        await product.update({ deleteLogic: true }, { where: { userId: id } });
+      }
+      return res.json({
+        message: "Usuarios y productos restaurados exitosamente",
+      });
+    } else {
+      return res.status(400).json({ error: "Acción no válida" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 const registerPercentege = async () => {
   try {

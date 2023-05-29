@@ -85,7 +85,7 @@ loginRouter.post("/create", async (req, res) => {
       birthDate: birthDate,
       address: address,
       nickname: nickname,
-      picture: picture || "../utils/usuarios.jpg",
+      picture: picture,
       roll: roll,
     });
 
