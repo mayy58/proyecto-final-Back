@@ -109,13 +109,13 @@ const getOrderDateController= async()=>{
   const monthlyTotals = [];
   //console.log(arr)
   arr.forEach(item => {
-    let anio = item.orderDate.slice(0,4)
+    //let anio = item.orderDate.slice(0,4)
     let mes =  item.orderDate.slice(5,7)
-     console.log(anio)
-    console.log(mes)
+     //console.log(anio)
+    //console.log(mes)
    
    // console.log(month)
-    const key = `${mes}/${anio}`;
+    const key = `${mes}`;
 
     const existingMonth = monthlyTotals.find(monthTotal => monthTotal[0] === key);
 
@@ -125,9 +125,57 @@ const getOrderDateController= async()=>{
       monthlyTotals.push([key, parseFloat(item.totalAmount)]);
     }
   });
-console.log(monthlyTotals);
-return monthlyTotals;
-//return arr;
+  const arregloNuevo = [];
+
+  for (let i = 0; i < monthlyTotals.length; i++) {
+    const elemento = monthlyTotals[i];
+    const codigo = elemento[0];
+    let mes;
+    let importe = elemento[1];
+  
+    switch (codigo) {
+      case '01':
+        mes = 'Enero';
+        break;
+      case '02':
+        mes = 'Febrero';
+        break;
+      case '03':
+        mes = 'Marzo';
+        break;
+      case '04':
+        mes = 'Abril';
+        break;
+      case '05':
+        mes = 'Mayo';
+        break;
+      case '06':
+        mes = "Junio";
+        break;
+      case '07':
+        mes = "Julio";
+        break;
+      case '08':
+        mes = "Agosto";
+      case '09':
+        mes = 'Setiembre';
+        break;
+      case '10':
+        mes = "Octubre";
+        break;
+      case '11':
+        mes = "Noviembre";
+        break;
+      case '12':
+        mes = "Diciembre";
+       break;
+    }
+  
+    arregloNuevo.push([ mes, importe]);
+  }
+// console.log(arregloNuevo);
+// return arregloNuevo;
+return arregloNuevo;
 }
 
 
