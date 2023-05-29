@@ -1,10 +1,10 @@
 const {
   createAdmin,
   allUser,
-  deleteSelectedUsers, 
+  deleteSelectedUsers,
   PieChart,
   registerPercentege,
-  findCountVentasXVendedor
+  findCountVentasXVendedor,
   deliveredProducts,
 } = require("../controllers/adminControllers");
 
@@ -49,6 +49,7 @@ const logicDelete = async (req, res) => {
   const { ids } = req.body;
   try {
     const result = await deleteSelectedUsers(ids);
+    //const result = await deleteSelectedUsers(action,ids);
     return res.status(200).json({ message: result.message });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -77,22 +78,19 @@ const getSellers = async (req, res) => {
   try {
     const result = await findCountVentasXVendedor();
     return res.status(200).json(result);
-      } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-    
-
-const allProduct = async (req, res) => {
-  try {
-    const result = await deliveredProducts();
-    return res.status(200).json({ result });
-
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
+const allProduct = async (req, res) => {
+  try {
+    const result = await deliveredProducts();
+    return res.status(200).json({ result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   postCreateAdmin,
@@ -101,5 +99,5 @@ module.exports = {
   percentegeGoogle,
   getPieChart,
   allProduct,
-  getSellers
+  getSellers,
 };
