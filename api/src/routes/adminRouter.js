@@ -10,18 +10,19 @@ const {
   logicDelete,
   allProduct,
   percentegeGoogle,
-
+  getSellers,
   getPieChart,
 } = require("../handlers/adminHandlers");
 
 const adminRouter = Router();
 
-adminRouter.post("/createadmin", [verifyToken, isSuperAdmin], postCreateAdmin);
-adminRouter.get("/listusers", getAllUser);
-adminRouter.delete("/listusers", [verifyToken, isAdmin], logicDelete);
-adminRouter.get("/deliveredProducts", allProduct);
-adminRouter.get("/percentage", percentegeGoogle);
 
+adminRouter.post("/createadmin", postCreateAdmin);
+adminRouter.get("/listusers", getAllUser);
+adminRouter.delete("/listusers", logicDelete);
+adminRouter.get("/percentage", percentegeGoogle);
 adminRouter.get("/piechart", getPieChart);
+adminRouter.get("/sellers", getSellers);
+adminRouter.get("/deliveredProducts", allProduct);
 
 module.exports = adminRouter;

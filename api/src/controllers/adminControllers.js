@@ -98,10 +98,10 @@ const PieChart = async () => {
     console.log("Error al traer categorias");
   }
   let prodxcat = [["CATEGORIA", "CANT. PRODUCTOS", { role: "style" }]];
-  // este de abajo para la libreria Chart.js, el de arriba para google chart
-  //let prodxcat = [];
+
   for (const c of cate) {
     let prod = [];
+
     try {
       prod = await product.findAll({
         include: {
@@ -113,12 +113,54 @@ const PieChart = async () => {
       console.log("Error al traer productos por categoria");
     }
     prodxcat.push([c.name, prod.length]);
-    // este de abajo para la libreria Chart.js, el de arriba para google chart
-    //prodxcat.push({ category: c.name, cantprod: prod.length});
+
   }
 
   return prodxcat;
 };
+
+
+ };
+
+ //! Busca la cantidad de productos en oferta para tejeta de admin
+const findCountSaleProduct = async () => {
+  let sales = [];
+  try {
+    sales = await product.findAll({
+      where: { isOnSale: true }
+    })
+  } catch (error) {
+    console.log("Error al traer productos de oferta")
+  }
+  return sales.length;
+}
+ 
+
+ //! Cant Ventas x vendedor
+ const findCountVentasXVendedor = async () => {
+    let vend = [];
+    try {
+      vend = await user.findAll({
+        attributes: ['id', 'name'],
+        where: {roll: 'SELLER'}})
+    } catch (error) {
+      console.log("Error al traer los vendedores", error)
+    }
+    const ventXvend = [["VENDEDOR", "FACTURACION", { role: "style" }]];
+    for (const v of vend) {
+        try {
+          vend = await order.sum('totalAmount', { where: { sellerId:v.id } })
+          
+        } catch (error) {
+          console.log("ERROR", error);
+        }
+        if(vend === null) vend = 0;
+        ventXvend.push([v.name, vend])
+    }
+
+  console.log(ventXvend);
+  return ventXvend;
+}
 
 const deliveredProducts = async () => {
   try {
@@ -149,4 +191,5 @@ module.exports = {
   PieChart,
   registerPercentege,
   deliveredProducts,
+  findCountVentasXVendedor,
 };
