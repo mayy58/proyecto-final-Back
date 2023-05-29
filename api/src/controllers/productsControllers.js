@@ -106,6 +106,7 @@ const findNameProdPrice = async (nameproduct, max, min, page, size) => {
 
 //! Controllers para cargar productos 
 const createProduct = async ({ name, img, stock, description, price, isOnSale, salePrice, status, categories, email}) =>{
+  const statusMayusculas = status.toUpperCase();
   let iduser = {};
   try {
     iduser = await user.findOne({where: {email: email}});
@@ -139,7 +140,7 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
       price, 
       isOnSale, 
       salePrice, 
-      status,
+      status: statusMayusculas,
       userId
     });
     console.log("Creacion de producto Realizado");
