@@ -16,7 +16,7 @@ googleRouter.get("/google/redirect", async (req, res) => {
 
     const userGoogle = await user.findOne({
 
-      where: { googleId: usergoogle.googleId },
+      where: { googleId: usergoogle.id },
 
     });
 
