@@ -1,7 +1,7 @@
 const {
   createAdmin,
   allUser,
-  deleteSelectedUsers, 
+  deleteSelectedUsers,
   PieChart,
   registerPercentege,
   findCountVentasXVendedor,
@@ -48,8 +48,10 @@ const getAllUser = async (req, res) => {
 
 const logicDelete = async (req, res) => {
   const { ids } = req.body;
+  const { action } = req.params;
   try {
-    const result = await deleteSelectedUsers(ids);
+    //const result = await deleteSelectedUsers(ids);
+    const result = await deleteSelectedUsers(action, ids);
     return res.status(200).json({ message: result.message });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -78,7 +80,7 @@ const getSellers = async (req, res) => {
   try {
     const result = await findCountVentasXVendedor();
     return res.status(200).json(result);
-      } catch (error) {
+  } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
@@ -87,22 +89,19 @@ const getSales = async (req, res) => {
   try {
     const result = await findCountSaleProduct();
     return res.status(200).json(result);
-      } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-    
-
-const allProduct = async (req, res) => {
-  try {
-    const result = await deliveredProducts();
-    return res.status(200).json({ result });
-
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
+const allProduct = async (req, res) => {
+  try {
+    const result = await deliveredProducts();
+    return res.status(200).json({ result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
   postCreateAdmin,
@@ -112,5 +111,5 @@ module.exports = {
   getPieChart,
   allProduct,
   getSellers,
-  getSales
+  getSales,
 };
