@@ -97,36 +97,30 @@ const allUser = async () => {
 //};
 
 const deleteSelectedUsers = async (action, ids) => {
-  const { action } = req.params;
-  const { ids } = req.body;
+  if (!Array.isArray(ids) || ids.length === 0) {
+    throw new Error(
+      "Debe seleccionar al menos un usuario para realizar la acción"
+    );
+  }
 
-  try {
-    if (!Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({
-        error: "Debe seleccionar al menos un usuario para realizar la acción",
-      });
+  if (action === "delete") {
+    for (const id of ids) {
+      await user.update({ deleteLogic: false }, { where: { id } });
+      await product.update({ deleteLogic: false }, { where: { userId: id } });
     }
-    if (action === "delete") {
-      for (const id of ids) {
-        await user.update({ deleteLogic: false }, { where: { id } });
-        await product.update({ deleteLogic: false }, { where: { userId: id } });
-      }
-      return res.json({
-        message: "Usuarios y productos marcados como eliminados",
-      });
-    } else if (action === "restore") {
-      for (const id of ids) {
-        await user.update({ deleteLogic: true }, { where: { id } });
-        await product.update({ deleteLogic: true }, { where: { userId: id } });
-      }
-      return res.json({
-        message: "Usuarios y productos restaurados exitosamente",
-      });
-    } else {
-      return res.status(400).json({ error: "Acción no válida" });
+    return {
+      message: "Usuarios y productos marcados como eliminados",
+    };
+  } else if (action === "restore") {
+    for (const id of ids) {
+      await user.update({ deleteLogic: true }, { where: { id } });
+      await product.update({ deleteLogic: true }, { where: { userId: id } });
     }
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return {
+      message: "Usuarios y productos restaurados exitosamente",
+    };
+  } else {
+    throw new Error("Acción no válida");
   }
 };
 

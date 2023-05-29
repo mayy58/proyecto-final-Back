@@ -48,9 +48,10 @@ const getAllUser = async (req, res) => {
 
 const logicDelete = async (req, res) => {
   const { ids } = req.body;
+  const { action } = req.params;
   try {
-    const result = await deleteSelectedUsers(ids);
-    //const result = await deleteSelectedUsers(action,ids);
+    //const result = await deleteSelectedUsers(ids);
+    const result = await deleteSelectedUsers(action, ids);
     return res.status(200).json({ message: result.message });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -110,4 +111,5 @@ module.exports = {
   getPieChart,
   allProduct,
   getSellers,
+  getSales,
 };
