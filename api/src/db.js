@@ -10,18 +10,17 @@ const reviewModel = require("./models/reviewModel");
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_DEPLOY } = process.env;
 
-// const sequelize = new Sequelize(
-//   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,
-//   {
-//     logging: false,
-//     native: false,
-//   }
-// );
+//const sequelize = new Sequelize(
+//  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`,
+//  {
+//    logging: false,
+//    native: false,
+//  }
+//);
 
 const sequelize = new Sequelize(DB_DEPLOY, {
  logging: false,
  native: false,
-
 });
 
 detailOrderModel(sequelize);
@@ -31,7 +30,8 @@ orderModel(sequelize);
 userModel(sequelize);
 reviewModel(sequelize);
 
-const { product, detailOrder, Category, order, user, review } = sequelize.models;
+const { product, detailOrder, Category, order, user, review } =
+  sequelize.models;
 
 product.hasMany(detailOrder);
 detailOrder.belongsTo(product);

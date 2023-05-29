@@ -1,58 +1,58 @@
-const { user } = require("../db");
 
-const createAdmin = async (req, res) => {
-  const { email, password, name, lastName, birthDate, address, nickname } =
-    req.body;
+
+const { Op } = require("sequelize");
+
+const { user, order, Category, product } = require("../db");
+
+
+const createAdmin = async (
+  picture,
+  email,
+  password,
+  name,
+  lastName,
+  birthDate,
+  address,
+  nickname
+) => {
   try {
     const existingAdmin = await user.findOne({
       where: {
         email: email,
-        roll: "ADMIN",
+        nickname: nickname,
       },
     });
     if (existingAdmin) {
-      return res.status(409).json({
-        message: "Ya existe un admin con el mismo correo electrónico.",
-      });
-    } else {
-      const newAdmin = await user.create({
-        email: email,
-        password: password,
-        name: name,
-        lastName: lastName,
-        birthDate: birthDate,
-        address: address,
-        nickname: nickname,
-        roll: "ADMIN",
-      });
-      return res
-        .status(200)
-        .json({ message: `Administrador ${newAdmin.name} creado con éxito` });
+      throw new Error("Existe un admin con el mismo correo electrónico.");
     }
+
+    const newAdmin = await user.create({
+      email: email,
+      password: password,
+      name: name,
+      lastName: lastName,
+      birthDate: birthDate,
+      address: address,
+      nickname: nickname,
+      picture: picture,
+      roll: "ADMIN",
+    });
+
+    return { message: `Administrador ${newAdmin.name} creado con éxito` };
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error(error.message);
+    throw error;
   }
 };
 
 const allUser = async (req, res) => {
   try {
-    const { status } = req.query;
-
-    let whereClause = {};
-
-    if (status === "active") {
-      whereClause.deleteLogic = true;
-    } else if (status === "inactive") {
-      whereClause.deleteLogic = false;
-    }
-
-    const allUsers = await user.findAll({
-      where: whereClause,
-      attributes: ["id", "nickname", "email", "deleteLogic"],
+    const users = await user.findAll({
+      attributes: ["id", "name", "email", "roll", "deleteLogic"],
     });
-    return res.status(200).json(allUsers);
+    res.status(200).json(users);
   } catch (error) {
-    throw new Error("Error en el servidor");
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -68,8 +68,65 @@ const deleteSelectedUsers = async (ids) => {
     }
     return { message: "Usuarios eliminados exitosamente" };
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    throw new Error(error.message);
   }
 };
 
-module.exports = { createAdmin, allUser, deleteSelectedUsers };
+const registerPercentege = async () => {
+  try {
+    const totalUsers = await user.count();
+    console.log(totalUsers);
+    const googleUsers = await user.count({
+      where: { googleId: { [Op.not]: null } },
+    });
+    console.log(googleUsers);
+    const directUsers = totalUsers - googleUsers;
+
+    const googlePercentage = (googleUsers / totalUsers) * 100;
+    const directPercentage = (directUsers / totalUsers) * 100;
+    console.log(googlePercentage);
+    console.log(directPercentage);
+    return { googlePercentage, directPercentage };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
+
+//! Controller que busca los datos para el grafico de torta "Cantidad de productos por Categoria"
+ const PieChart = async () => {
+  let cate=[]
+  try {
+      cate = await Category.findAll();
+  } catch (error) {
+      console.log("Error al traer categorias")
+  }
+  let prodxcat = [["CATEGORIA", "CANT. PRODUCTOS", { role: "style" }]];
+  // este de abajo para la libreria Chart.js, el de arriba para google chart
+  //let prodxcat = [];
+  for(const c of cate){
+    let prod=[]
+    try {
+      prod = await product.findAll({
+        include:{
+          model:Category,
+          where: {id: c.id}
+        }
+      })
+    } catch (error) {
+      console.log("Error al traer productos por categoria")
+    }
+    prodxcat.push([c.name, prod.length]);
+    // este de abajo para la libreria Chart.js, el de arriba para google chart
+    //prodxcat.push({ category: c.name, cantprod: prod.length});
+  }
+
+  return prodxcat;
+
+ };
+
+
+
+module.exports = { createAdmin, allUser, deleteSelectedUsers, PieChart,  registerPercentege, };
+
