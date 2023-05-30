@@ -12,7 +12,9 @@ const loginRouter = Router();
 loginRouter.post("/login", async (req, res) => {
   const { nickname, password } = req.body;
   try {
-    const User = await user.findOne({ where: { nickname: nickname } });
+    const User = await user.findOne({
+      where: { nickname: nickname, deleteLogic: true },
+    });
     const passwordMatch = User
       ? await bcrypt.compare(password, User.password)
       : false;
