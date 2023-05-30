@@ -110,7 +110,7 @@ const getProductsInactivosUser = async (req, res) => {
 const setReviewProduct = async (req, res) => {
   try {
     const { idProduc, rating, descripcion } = req.body;
-    const newReview = await createReviewProduct({ idProduc, rating, descripcion});
+    const newReview = await createReviewProduct( idProduc, rating, descripcion);
     res.status(200).json(newReview);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -120,7 +120,7 @@ const setReviewProduct = async (req, res) => {
 const getReviewProduct = async (req, res) => {
   try {
     const { id } = req.body;
-    const review = await findReviewProduct({ id });
+    const review = await findReviewProduct( id );
     res.status(200).json(review);
   } catch (error) {
     res.status(400).json({ error: error.message });

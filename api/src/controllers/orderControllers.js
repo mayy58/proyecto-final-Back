@@ -77,13 +77,13 @@ const createOrderYDetail = async (arrsyOrd)=>{
 }
 
 //! Actualizar orden
-const updateStateOrder = async (estado, orderid) => {
+const updateStateOrder = async (estado, id) => {
   try {
         
     if(estado === 'ENVIADO')
-          await order.update({status: estado,}, {where: {id: orderid}});
+          await order.update({status: estado,}, {where: {id: id}});
     else 
-          await order.update({ deleteLogic: false, status: estado,}, {where: {id: orderid}});
+          await order.update({ deleteLogic: false, status: estado,}, {where: {id: id}});
     
     // La actualización se realizó exitosamente
     console.log('Actualización de orden exitosa');
@@ -92,7 +92,7 @@ const updateStateOrder = async (estado, orderid) => {
     console.error('Error al actualizar el orden:', error);
     throw Error('Error al actualizar el orden:', error)
   }
-  
+  return 'Actualización de orden exitosa';
 }
 
 const getOrderDateController= async()=>{
