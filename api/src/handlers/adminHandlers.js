@@ -48,9 +48,8 @@ const getAllUser = async (req, res) => {
 
 const logicDelete = async (req, res) => {
   const { ids } = req.body;
-  const { action } = req.params;
+  const { action } = req.query;
   try {
-    //const result = await deleteSelectedUsers(ids);
     const result = await deleteSelectedUsers(action, ids);
     return res.status(200).json({ message: result.message });
   } catch (error) {
