@@ -51,12 +51,13 @@ const Saleshistoryuser = async (email) =>{
     try {
         or = await order.findAll({ 
             where: { sellerId: usid},
+
             include: {
                 model: detailOrder,
                 attributes: ["quantity", "purchaseprice"],
                 include: {
                     model: product,
-                    attributes: [ "name", "img" ],
+                    attributes: ["id", "name", "img" ],
                 }
             }
         });
@@ -65,6 +66,20 @@ const Saleshistoryuser = async (email) =>{
         console.log("Error al buscar ordenes con detalles");
         throw Error("Error al buscar ordenes con detalles", error);
     }
+
+    for (let i = 0; i < or.length; i++) {
+        const o = or[i];
+        let idus = o.userId;
+        try {
+          const use = await user.findByPk(idus);
+          const {name, address, lastName} = use;
+          const orderWithComprador = { ...o.dataValues, Comprador:  {name, address, lastName} };
+          or[i] = orderWithComprador;
+        } catch (error) {
+          console.log("Error al buscar el usuario comprador", error);
+        }
+      }
+      
 
     return or;
 
