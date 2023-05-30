@@ -2,7 +2,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { user } = require("../db");
 
-const sgMail = require('@sendgrid/mail');
+const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.KEY_SENDGRID);
 require("dotenv").config();
 
@@ -39,19 +39,17 @@ passport.use(
             to: `${newuser.email}`, // Change to your recipient
             from: `tukimarket.contacto@gmail.com`, // Change to your verified sender
 
-            subject: 'Bienvenido a TukiMarket',
+            subject: "Bienvenido a TukiMarket",
             text: `Hola! ${newuser.name} Bienvenido a TukiMarket!`,
-            html: `<strong>Hola ${newuser.name} Gracias por registrarte en nuestra pagina</strong>`,
-          }
-          
+            html: `<strong>Hola ${newuser.name} Gracias por registrarte en nuestra página</strong>`,
+          };
+
           sgMail
             .send(msg)
-            .then((response) => {
-            })
+            .then((response) => {})
             .catch((error) => {
-              console.error(error)
-            })
-
+              console.error(error);
+            });
 
           console.log(`Usuario creado exitosamente ` + newuser);
           done(null, newuser);

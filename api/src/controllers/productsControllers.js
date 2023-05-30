@@ -155,9 +155,9 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
 
   //! Controller para cargar review de producto
 
-  const createReviewProduct = async (id, punctuationproduct, coment) => {
+  const createReviewProduct = async (idProduc, rating, descripcion) => {
     try {
-      const newReview = await review.create({punctuationproduct, coment, productId: id})
+      const newReview = await review.create({punctuationproduct: rating, coment: descripcion, productId: idProduc})
     } catch (error) {
       console.log("Error en la creacion del review");
       throw Error("Error en la creacion del review");

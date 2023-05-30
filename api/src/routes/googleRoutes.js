@@ -20,7 +20,6 @@ googleRouter.get("/google/redirect", async (req, res) => {
 
     });
 
-
     const token = jwt.sign(
       {
         id: userGoogle?.id,
@@ -43,12 +42,23 @@ googleRouter.get("/google/redirect", async (req, res) => {
     //   exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     // });
 
-    const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(token)}&tokenExpiration=${encodeURIComponent(tokenExpiration)}&email=${encodeURIComponent(userGoogle?.email)}&username=${encodeURIComponent(userGoogle?.nickname)}&roll=${encodeURIComponent(userGoogle?.roll)}`;
-    res.redirect(redirectURL)
+    const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(
+      token
+    )}&tokenExpiration=${encodeURIComponent(
+      tokenExpiration
+    )}&email=${encodeURIComponent(
+      userGoogle?.email
+    )}&username=${encodeURIComponent(
+      userGoogle?.nickname
+    )}&roll=${encodeURIComponent(
+      userGoogle?.roll
+    )}&picture=${encodeURIComponent(userGoogle?.picture)}`;
+    res.redirect(redirectURL);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Error en el servidor", message: error.message });
-
+    res
+      .status(500)
+      .json({ error: "Error en el servidor", message: error.message });
   }
 });
 

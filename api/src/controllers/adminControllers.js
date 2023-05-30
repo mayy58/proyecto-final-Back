@@ -52,7 +52,10 @@ const createAdmin = async (
       from: `tukimarket.contacto@gmail.com`,
       subject: "Bienvenido a TukiMarket",
       text: `Hola! ${newAdmin.name} Bienvenido a TukiMarket!`,
-      html: `<strong>Hola ${newAdmin.name} Felicidades, eres nuestro nuevo administrador. Confiamos en ti!</strong>`,
+      html: `<strong>Hola ${newAdmin.name} Felicidades, eres nuestro nuevo administrador. Confiamos en ti!
+      Tu usuario y contraseña son:
+      nickname: ${newAdmin.nickname}
+      password: ${newAdmin.nickname} </strong>`,
     };
 
     sgMail
@@ -68,33 +71,20 @@ const createAdmin = async (
     throw error;
   }
 };
+
 const allUser = async () => {
   try {
     const users = await user.findAll({
       attributes: ["id", "name", "email", "roll", "deleteLogic"],
+      where: {
+        roll: ["USER", "SELLER"],
+      },
     });
     return users;
   } catch (error) {
     throw new Error("Error al cargar los datos");
   }
 };
-
-//const deleteSelectedUsers = async (ids) => {
-//  try {
-//    // Verificar si se proporcionaron IDs válidos
-//    if (!Array.isArray(ids) || ids.length === 0) {
-//      throw new Error("Debe seleccionar un usuario para eliminar");
-//    }
-//
-//    for (const id of ids) {
-//      await user.update({ deleteLogic: false }, { where: { id: id } });
-//      await product.update({ deleteLogic: false }, { where: { userId: id } });
-//    }
-//    return { message: "Usuarios y productos dados de baja exitosamente" };
-//  } catch (error) {
-//    throw new Error(error.message);
-//  }
-//};
 
 const deleteSelectedUsers = async (action, ids) => {
   if (!Array.isArray(ids) || ids.length === 0) {
@@ -167,9 +157,15 @@ const PieChart = async () => {
     } catch (error) {
       console.log("Error al traer productos por categoria");
     }
-    prodxcat.push([c.name, prod.length]);
-  }
 
+
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    prodxcat.push([c.name, prod.length, `rgb(${red}, ${green}, ${blue})` ]);
+  }
+  console.log(prodxcat);
   return prodxcat;
 };
 
@@ -205,7 +201,12 @@ const findCountVentasXVendedor = async () => {
       console.log("ERROR", error);
     }
     if (vend === null) vend = 0;
-    ventXvend.push([v.name, vend]);
+    
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    ventXvend.push([v.name, vend, `rgb(${red}, ${green}, ${blue})`]);
   }
 
   console.log(ventXvend);

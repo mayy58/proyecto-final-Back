@@ -36,7 +36,7 @@ const getOrderNameProductControllers = async({ nameproduct,size, page, orders })
         },
     },
       order: [[`${name}`, `${orders}`]],
-      attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic" ],
+      attributes:[ "id", "img", "name", "stock", "description", "price", "isOnSale", "salePrice", "status", "deleteLogic", "userId" ],
       limit: size,
       offset: page * size,
     })
