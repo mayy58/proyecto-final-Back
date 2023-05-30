@@ -157,9 +157,15 @@ const PieChart = async () => {
     } catch (error) {
       console.log("Error al traer productos por categoria");
     }
-    prodxcat.push([c.name, prod.length]);
-  }
 
+
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    prodxcat.push([c.name, prod.length, `rgb(${red}, ${green}, ${blue})` ]);
+  }
+  console.log(prodxcat);
   return prodxcat;
 };
 
@@ -195,7 +201,12 @@ const findCountVentasXVendedor = async () => {
       console.log("ERROR", error);
     }
     if (vend === null) vend = 0;
-    ventXvend.push([v.name, vend]);
+    
+    const red = Math.floor(Math.random() * 256);
+    const green = Math.floor(Math.random() * 256);
+    const blue = Math.floor(Math.random() * 256);
+
+    ventXvend.push([v.name, vend, `rgb(${red}, ${green}, ${blue})`]);
   }
 
   console.log(ventXvend);
