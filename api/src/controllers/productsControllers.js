@@ -155,9 +155,17 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
 
   //! Controller para cargar review de producto
 
-  const createReviewProduct = async (idProduc, rating, descripcion) => {
+  const createReviewProduct = async (idProduc, rating, descripcion, email) => {
+    let us = {};
     try {
-      const newReview = await review.create({punctuationproduct: rating, coment: descripcion, productId: idProduc})
+      us = await user.findOne({ where: {email: email}})
+    } catch (error) {
+      console.log("No se encuentra usuario");
+      throw new Error("No se encuentra usuario")
+    }
+    let nombre = us.name +" " + us.lastName;
+    try {
+      const newReview = await review.create({punctuationproduct: rating, coment: descripcion, productId: idProduc, user: nombre })
     } catch (error) {
       console.log("Error en la creacion del review");
       throw Error("Error en la creacion del review");
@@ -167,15 +175,19 @@ const createProduct = async ({ name, img, stock, description, price, isOnSale, s
 
 //! Controller para buscar un review
 
-const findReviewProduct = (id) => {
+const findReviewProduct =async (id) => {
+  console.log(id);
+  let reviews = []
   try {
-    const review = review.findAll({where: {productId: id}})
+    reviews = await review.findAll({
+      where: { productId: id },
+    });
   } catch (error) {
     console.log("Error en la buscar el review");
     throw Error("Error en la buscar el review");
   }
 
-  return review;
+  return reviews;
 
 }
 

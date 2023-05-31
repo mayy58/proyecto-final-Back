@@ -109,8 +109,8 @@ const getProductsInactivosUser = async (req, res) => {
 //! Handlers para cargar review de producto
 const setReviewProduct = async (req, res) => {
   try {
-    const { idProduc, rating, descripcion } = req.body;
-    const newReview = await createReviewProduct( idProduc, rating, descripcion);
+    const { idProduc, rating, descripcion, email } = req.body;
+    const newReview = await createReviewProduct( idProduc, rating, descripcion, email);
     res.status(200).json(newReview);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -118,9 +118,11 @@ const setReviewProduct = async (req, res) => {
 };
 //! Handlers para buscar review de producto
 const getReviewProduct = async (req, res) => {
+  console.log("ENTRAAAA");
   try {
-    const { id } = req.body;
-    const review = await findReviewProduct( id );
+    const { id } = req.params;
+    console.log(id);
+    const review = await findReviewProduct(id);
     res.status(200).json(review);
   } catch (error) {
     res.status(400).json({ error: error.message });
