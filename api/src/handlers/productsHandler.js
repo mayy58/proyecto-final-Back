@@ -132,10 +132,10 @@ const getReviewProduct = async (req, res) => {
 
   const { id } = req.params;
   const { name, img, stock, description, price, isOnSale, salePrice,
-      status, deleteLogic, categories,email  } = req.body;
+      status, deleteLogic  } = req.body;
   try {
       await updateProductController({id, name, img, stock, description, price, isOnSale, salePrice,
-          status, deleteLogic, categories,email});
+          status, deleteLogic});
       res.status(200).send("El producto ha sido modificado con exito")
   } catch (error) {
       res.status(404).json({error: error.message})
