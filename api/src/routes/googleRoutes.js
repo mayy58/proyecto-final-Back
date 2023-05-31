@@ -15,9 +15,12 @@ googleRouter.get("/google/redirect", async (req, res) => {
     const usergoogle = req.user;
 
     const userGoogle = await user.findOne({
-      where: { googleId: usergoogle.id },
+      
+      where: { googleId: usergoogle.id.toString() },
+
     });
 
+    
     const token = jwt.sign(
       {
         id: userGoogle?.id,
@@ -40,17 +43,34 @@ googleRouter.get("/google/redirect", async (req, res) => {
     //   exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     // });
 
+
+    if (!userGoogle) {
+      const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(
+        token
+      )}&tokenExpiration=${encodeURIComponent(
+        tokenExpiration
+      )}&email=${encodeURIComponent(
+        usergoogle.email
+      )}&username=${encodeURIComponent(
+        usergoogle.nickname
+      )}&roll=${encodeURIComponent(
+        usergoogle.roll
+      )}&picture=${encodeURIComponent(usergoogle.picture)}`;
+      return res.redirect(redirectURL);
+    }
+
+
     const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(
       token
     )}&tokenExpiration=${encodeURIComponent(
       tokenExpiration
     )}&email=${encodeURIComponent(
-      userGoogle?.email
+      userGoogle.email
     )}&username=${encodeURIComponent(
-      userGoogle?.nickname
+      userGoogle.nickname
     )}&roll=${encodeURIComponent(
-      userGoogle?.roll
-    )}&picture=${encodeURIComponent(userGoogle?.picture)}`;
+      userGoogle.roll
+    )}&picture=${encodeURIComponent(userGoogle.picture)}`;
     res.redirect(redirectURL);
   } catch (error) {
     console.log(error);
