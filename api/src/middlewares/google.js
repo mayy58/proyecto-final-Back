@@ -51,7 +51,6 @@ passport.use(
               console.error(error);
             });
 
-          console.log(`Usuario creado exitosamente ` + newuser);
           done(null, newuser);
         }
       } catch (error) {

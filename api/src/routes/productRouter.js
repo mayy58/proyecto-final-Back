@@ -36,7 +36,7 @@ productRouter.get("/pricerange/name/:nameproduct", getPriceRangeName); // produc
 
 productRouter.get("/order/name/:nameproduct", getOrderNameProductPriceAlf); //http://localhost:3001/product/order/name/nameproduct?name=samsgung Galaxi&priceMin=10&priceMax=800
 
-productRouter.post("/review/:id", setReviewProduct)
+productRouter.post("/review/", setReviewProduct)
 productRouter.get("/review/:id", getReviewProduct)
 
 //******************** */
