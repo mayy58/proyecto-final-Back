@@ -18,7 +18,10 @@ module.exports = (sequelize) => {
       coment: {
         type: DataTypes.TEXT,
       },
-
+      user:{
+        type: DataTypes.STRING,
+        defaultValue: "Anónimo",
+      },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
