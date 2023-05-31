@@ -312,7 +312,22 @@ const popularProductByCategory = async (limit) => {
     return [];
   }
 };
+const putActiveProductController = async({id, deleteLogic})=>{
+  const idProducto = parseInt(id) 
 
+  const productActive = await product.update(
+    {
+      deleteLogic,
+    },
+    {
+      where: {
+        id: idProducto
+      }
+    }
+  );
+  console.log(productActive)
+  return productActive ? "El producto se activo con exito" : "El producto se desactivo con exito" 
+}
 
 module.exports = { 
   popularProductByCategory, 
@@ -325,7 +340,8 @@ module.exports = {
   postPagoMercadoPago, 
   updateProductController,
   createReviewProduct,
-  findReviewProduct
+  findReviewProduct,
+  putActiveProductController
  };
 
 

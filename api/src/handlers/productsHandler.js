@@ -9,6 +9,7 @@ const { popularProductByCategory,
   updateProductController, 
   createReviewProduct, 
   findReviewProduct,
+  putActiveProductController
   } = require("../controllers/productsControllers");
 
 
@@ -179,6 +180,16 @@ const getPopularProduct = async () => {
     res.status(404).json({ error: error.message });
   }
 };
+const putActiveProductHandler= async(req, res)=>{
+  try {
+    const {id} = req.params;
+    let { deleteLogic,email } = req.body;
+    const response = await putActiveProductController({id, deleteLogic,email})
+    res.status(201).send(response)
+  } catch (error) {
+    res.status(400).json({error:error.message})
+  }
+}
 
 
 module.exports = { 
@@ -193,6 +204,6 @@ module.exports = {
   upDateProductHandler,
   setReviewProduct,
   getReviewProduct,
- 
+  putActiveProductHandler
 };
 

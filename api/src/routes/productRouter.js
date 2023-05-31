@@ -13,7 +13,8 @@ const {
   postShoppingHandler,
   upDateProductHandler,
   setReviewProduct,
-  getReviewProduct
+  getReviewProduct,
+  putActiveProductHandler
 } = require("../handlers/productsHandler");
 
 const productRouter = Router();
@@ -44,6 +45,6 @@ productRouter.get("/popular", getPopularProduct);
 productRouter.get("/order/orderPrice", getOrderHanlderProducto);
 //para el pull request mercado pago
 productRouter.post("/payment", postShoppingHandler);
-///hecho por nelson para despues controlar en el pull marge request
+productRouter.put("/delete/deleteLogic/:idProducto", putActiveProductHandler)
 
 module.exports = productRouter;
