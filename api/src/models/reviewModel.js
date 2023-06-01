@@ -12,17 +12,16 @@ module.exports = (sequelize) => {
         autoIncrement: true,
       },
       punctuationproduct: {
-        type: DataTypes.INTEGER, //del 1 al 5
+        type: DataTypes.DECIMAL(10, 2), 
         allowNull: false,
-      },
-      punctuationseller: {
-        type: DataTypes.INTEGER, //del 1 al 5
-        allowNull: true,
       },
       coment: {
         type: DataTypes.TEXT,
       },
-
+      user:{
+        type: DataTypes.STRING,
+        defaultValue: "Anónimo",
+      },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,

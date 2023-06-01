@@ -15,13 +15,13 @@ const getProduct = async (req, res) => {
         size = sizeAsNumbre;
     
     //****** */
-    let prod={};
+    let prod;
     try {
         const {name} = req.query;
         name ?
             prod = await getByNameProduct(name, page, size)
         :
-            prod = await findAllProduct(page, size) 
+            prod = await findAllProduct() 
 
         res.status(200).json(prod);
     } catch (error) {

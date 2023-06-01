@@ -42,19 +42,23 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
       },
       roll: {
-        type: DataTypes.ENUM("USER", "ADMIN", "SELLER", "SUPER"),
+        type: DataTypes.ENUM("USER", "ADMIN", "SUPERADMIN", "SELLER"),
         defaultValue: "USER",
       },
       googleId: {
         type: DataTypes.STRING,
       },
-      picture:{
-        type: DataTypes.STRING(500),
+      picture: {
+        type: DataTypes.STRING(1000),
         allowNull: true,
       },
       deleteLogic: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      resetPasswordToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {

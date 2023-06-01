@@ -3,7 +3,6 @@ const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const { user } = require("../db");
 require("dotenv").config();
-
 const googleRouter = Router();
 
 //googleRouter.get(
@@ -13,19 +12,21 @@ const googleRouter = Router();
 
 googleRouter.get("/google/redirect", async (req, res) => {
   try {
-    const usergoogle = await req.user;
+    const usergoogle = req.user;
 
     const userGoogle = await user.findOne({
-      where: { email: usergoogle.emails[0].value },
+      
+      where: { googleId: usergoogle.id.toString() },
+
     });
 
+    
     const token = jwt.sign(
       {
-        id: usergoogle.id,
-        nickname:
-          usergoogle.displayName || usergoogle.emails[0].value.split("@")[0],
-        email: usergoogle.emails[0].value,
-        roll: userGoogle.roll,
+        id: userGoogle?.id,
+        nickname: userGoogle?.nickname,
+        email: userGoogle?.email,
+        roll: userGoogle?.roll,
       },
       process.env.SECRET_key,
       {
@@ -41,25 +42,42 @@ googleRouter.get("/google/redirect", async (req, res) => {
     //   token,
     //   exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
     // });
-    const redirectURL = `https://proyecto-final-9tt4gon2d-tomsandoval.vercel.app/loginGoogle?token=${encodeURIComponent(
+
+
+    if (!userGoogle) {
+      const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(
+        token
+      )}&tokenExpiration=${encodeURIComponent(
+        tokenExpiration
+      )}&email=${encodeURIComponent(
+        usergoogle.email
+      )}&username=${encodeURIComponent(
+        usergoogle.nickname
+      )}&roll=${encodeURIComponent(
+        usergoogle.roll
+      )}&picture=${encodeURIComponent(usergoogle.picture)}`;
+      return res.redirect(redirectURL);
+    }
+
+
+    const redirectURL = `http://localhost:5173/loginGoogle?token=${encodeURIComponent(
       token
     )}&tokenExpiration=${encodeURIComponent(
       tokenExpiration
     )}&email=${encodeURIComponent(
-      usergoogle.emails[0].value
+      userGoogle.email
     )}&username=${encodeURIComponent(
-      usergoogle.displayName || usergoogle.emails[0].value.split("@")[0]
-    )}&roll=${encodeURIComponent(userGoogle.roll)}`;
+      userGoogle.nickname
+    )}&roll=${encodeURIComponent(
+      userGoogle.roll
+    )}&picture=${encodeURIComponent(userGoogle.picture)}`;
     res.redirect(redirectURL);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Error en el servidor" });
+    res
+      .status(500)
+      .json({ error: "Error en el servidor", message: error.message });
   }
-});
-
-googleRouter.get("/logout", function (req, res) {
-  req.logout();
-  res.redirect("/");
 });
 
 module.exports = googleRouter;

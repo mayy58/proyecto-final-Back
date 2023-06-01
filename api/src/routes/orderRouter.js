@@ -1,9 +1,11 @@
 const { Router } = require("express");
-const { setOrder, updateOrder } = require("../handlers/orderHandler")
+const { setOrder, updateOrder,getOrderDateHandler } = require("../handlers/orderHandler");
 
 const orderRouter = Router();
 
 orderRouter.post("/", setOrder);
 orderRouter.put("/update", updateOrder);
+orderRouter.get("/orderdate", getOrderDateHandler)
 
 module.exports = orderRouter;
+
