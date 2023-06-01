@@ -41,6 +41,7 @@ loginRouter.post("/login", async (req, res) => {
         address: User.address,
         email: User.email,
         picture: User.picture,
+        roll: User.roll,
         token,
         exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
       });
